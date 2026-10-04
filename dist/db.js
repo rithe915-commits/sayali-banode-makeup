@@ -322,6 +322,22 @@ const StorageDB = {
       client.from('portfolio').delete().eq('id', id).catch(console.warn);
     }
   },
+  async updatePhoto(item) {
+    let list = this.getPortfolio();
+    const idx = list.findIndex(p => p.id === item.id);
+    if (idx !== -1) {
+      list[idx] = { ...list[idx], ...item };
+      this.savePortfolio(list);
+      const client = getSupabase();
+      if (client) {
+        client.from('portfolio').update({
+          title: item.title,
+          category: item.category,
+          url: item.url
+        }).eq('id', item.id).catch(console.warn);
+      }
+    }
+  },
 
   getServices() { return this.get(DB_KEYS.SERVICES, DEFAULT_SERVICES); },
   saveServices(s) { this.set(DB_KEYS.SERVICES, s); },
@@ -332,6 +348,22 @@ const StorageDB = {
     const client = getSupabase();
     if (client) {
       client.from('services').insert(service).catch(console.warn);
+    }
+  },
+  async updateService(service) {
+    let list = this.getServices();
+    const idx = list.findIndex(s => s.id === service.id);
+    if (idx !== -1) {
+      list[idx] = { ...list[idx], ...service };
+      this.saveServices(list);
+      const client = getSupabase();
+      if (client) {
+        client.from('services').update({
+          title: service.title,
+          icon: service.icon,
+          description: service.description
+        }).eq('id', service.id).catch(console.warn);
+      }
     }
   },
   async deleteService(id) {
@@ -362,6 +394,24 @@ const StorageDB = {
       }).catch(console.warn);
     }
     return list;
+  },
+  async updateTestimonial(t) {
+    let list = this.getTestimonials();
+    const idx = list.findIndex(item => item.id === t.id);
+    if (idx !== -1) {
+      list[idx] = { ...list[idx], ...t };
+      this.saveTestimonials(list);
+      const client = getSupabase();
+      if (client) {
+        client.from('testimonials').update({
+          name: t.name,
+          rating: t.rating,
+          emoji: t.emoji,
+          text: t.text,
+          status: t.status || 'approved'
+        }).eq('id', t.id).catch(console.warn);
+      }
+    }
   },
   async deleteTestimonial(id) {
     let list = this.getTestimonials().filter(t => t.id !== id);

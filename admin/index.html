@@ -483,12 +483,13 @@
 
   <!-- ==================== MODALS ==================== -->
 
-  <!-- Add Photo Modal -->
+  <!-- Add / Edit Photo Modal -->
   <div id="modal-photo" class="fixed inset-0 z-50 bg-black/80 hidden items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 md:p-8 max-w-md w-full relative">
       <button onclick="closeModal('modal-photo')" class="absolute top-5 right-5 text-zinc-400 hover:text-white text-xl">✕</button>
-      <h3 class="font-playfair font-bold text-xl mb-4">Add Portfolio Photo</h3>
+      <h3 id="modal-photo-title" class="font-playfair font-bold text-xl mb-4">Add Portfolio Photo</h3>
       <form id="form-add-photo" class="space-y-4">
+        <input type="hidden" id="photo-edit-id" value="" />
         <div>
           <label class="block text-xs font-semibold text-zinc-400 mb-1">Look Title *</label>
           <input type="text" id="photo-title" required placeholder="e.g. Royal Marathi Bridal" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
@@ -511,19 +512,20 @@
           <label class="block text-xs font-semibold text-zinc-400 mb-1">Or Upload from Computer</label>
           <input type="file" id="photo-file" accept="image/*" class="w-full text-xs text-zinc-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-zinc-800 file:text-gold hover:file:bg-zinc-700" />
         </div>
-        <button type="submit" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold py-3 rounded-xl text-sm transition mt-4">
+        <button type="submit" id="btn-save-photo" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold py-3 rounded-xl text-sm transition mt-4">
           Save Photo to Portfolio
         </button>
       </form>
     </div>
   </div>
 
-  <!-- Add Service Modal -->
+  <!-- Add / Edit Service Modal -->
   <div id="modal-service" class="fixed inset-0 z-50 bg-black/80 hidden items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 md:p-8 max-w-md w-full relative">
       <button onclick="closeModal('modal-service')" class="absolute top-5 right-5 text-zinc-400 hover:text-white text-xl">✕</button>
-      <h3 class="font-playfair font-bold text-xl mb-4">Add / Edit Service</h3>
+      <h3 id="modal-service-title" class="font-playfair font-bold text-xl mb-4">Add / Edit Service</h3>
       <form id="form-add-service" class="space-y-4">
+        <input type="hidden" id="service-edit-id" value="" />
         <div class="grid grid-cols-4 gap-3">
           <div>
             <label class="block text-xs font-semibold text-zinc-400 mb-1">Icon/Emoji</label>
@@ -538,19 +540,20 @@
           <label class="block text-xs font-semibold text-zinc-400 mb-1">Description</label>
           <textarea id="service-desc" rows="3" placeholder="Explain what is included..." class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none"></textarea>
         </div>
-        <button type="submit" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold py-3 rounded-xl text-sm transition mt-4">
+        <button type="submit" id="btn-save-service" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold py-3 rounded-xl text-sm transition mt-4">
           Save Service
         </button>
       </form>
     </div>
   </div>
 
-  <!-- Add Review Modal -->
+  <!-- Add / Edit Review Modal -->
   <div id="modal-review" class="fixed inset-0 z-50 bg-black/80 hidden items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 md:p-8 max-w-md w-full relative">
       <button onclick="closeModal('modal-review')" class="absolute top-5 right-5 text-zinc-400 hover:text-white text-xl">✕</button>
-      <h3 class="font-playfair font-bold text-xl mb-4">Add Client Review</h3>
+      <h3 id="modal-review-title" class="font-playfair font-bold text-xl mb-4">Add Client Review</h3>
       <form id="form-add-review" class="space-y-4">
+        <input type="hidden" id="review-edit-id" value="" />
         <div>
           <label class="block text-xs font-semibold text-zinc-400 mb-1">Client Name *</label>
           <input type="text" id="review-client-name" required placeholder="e.g. Mansi Deshmukh" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
@@ -561,6 +564,7 @@
             <select id="review-rating" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none">
               <option value="5">5 Stars ★★★★★</option>
               <option value="4">4 Stars ★★★★☆</option>
+              <option value="3">3 Stars ★★★☆☆</option>
             </select>
           </div>
           <div>
@@ -572,7 +576,7 @@
           <label class="block text-xs font-semibold text-zinc-400 mb-1">Review Text *</label>
           <textarea id="review-text" rows="3" required placeholder="Write the feedback received from the client..." class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none"></textarea>
         </div>
-        <button type="submit" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold py-3 rounded-xl text-sm transition mt-4">
+        <button type="submit" id="btn-save-review" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold py-3 rounded-xl text-sm transition mt-4">
           Publish Review
         </button>
       </form>
@@ -863,25 +867,48 @@
     function renderPortfolioAdmin() {
       const items = StorageDB.getPortfolio();
       const grid = document.getElementById('admin-portfolio-grid');
+      if (!items || items.length === 0) {
+        grid.innerHTML = '<div class="col-span-full text-center py-12 text-zinc-500 text-sm">No photos in portfolio yet. Click "+ Add New Photo" to upload.</div>';
+        return;
+      }
       grid.innerHTML = items.map(p => `
-        <div class="relative group rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 shadow-md">
-          <img src="${p.url}" alt="${p.title}" class="w-full h-48 object-cover" />
-          <div class="p-3">
-            <span class="text-[10px] uppercase font-bold text-gold tracking-wider">${p.category}</span>
-            <h4 class="font-semibold text-sm text-white truncate">${p.title}</h4>
+        <div class="relative group rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 shadow-md flex flex-col justify-between">
+          <div>
+            <img src="${p.url}" alt="${p.title}" class="w-full h-48 object-cover" />
+            <div class="p-3">
+              <span class="text-[10px] uppercase font-bold text-gold tracking-wider">${p.category}</span>
+              <h4 class="font-semibold text-sm text-white truncate">${p.title}</h4>
+            </div>
           </div>
-          <button onclick="deletePhoto('${p.id}')" class="absolute top-2 right-2 bg-rose-600/90 hover:bg-rose-600 text-white text-xs p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition shadow">
-            🗑️ Delete
-          </button>
+          <div class="p-3 pt-0 border-t border-zinc-800/80 flex items-center justify-between text-xs mt-2">
+            <button onclick="editPhoto('${p.id}')" class="text-gold hover:text-amber-300 font-medium py-1 px-2 rounded-lg bg-zinc-800/60 hover:bg-zinc-800 transition">
+              ✏️ Edit
+            </button>
+            <button onclick="deletePhoto('${p.id}')" class="text-rose-400 hover:text-rose-300 font-medium py-1 px-2 rounded-lg bg-zinc-800/60 hover:bg-zinc-800 transition">
+              🗑️ Delete
+            </button>
+          </div>
         </div>
       `).join('');
     }
 
+    function editPhoto(id) {
+      const items = StorageDB.getPortfolio();
+      const p = items.find(item => item.id === id);
+      if (!p) return;
+      document.getElementById('photo-edit-id').value = p.id;
+      document.getElementById('photo-title').value = p.title || '';
+      document.getElementById('photo-category').value = p.category || 'bridal';
+      document.getElementById('photo-url').value = p.url || '';
+      document.getElementById('photo-file').value = '';
+      document.getElementById('modal-photo-title').textContent = 'Edit Portfolio Look';
+      document.getElementById('btn-save-photo').textContent = 'Update Portfolio Look';
+      openModal('modal-photo');
+    }
+
     function deletePhoto(id) {
       if (confirm("Remove this photo from portfolio?")) {
-        let items = StorageDB.getPortfolio();
-        items = items.filter(p => p.id !== id);
-        StorageDB.savePortfolio(items);
+        StorageDB.deletePhoto(id);
         renderPortfolioAdmin();
       }
     }
@@ -890,25 +917,47 @@
     function renderServicesAdmin() {
       const services = StorageDB.getServices();
       const grid = document.getElementById('admin-services-grid');
+      if (!services || services.length === 0) {
+        grid.innerHTML = '<div class="col-span-full text-center py-12 text-zinc-500 text-sm">No services configured yet. Click "+ Add Service" to create one.</div>';
+        return;
+      }
       grid.innerHTML = services.map(s => `
-        <div class="p-5 rounded-2xl bg-zinc-900 border border-zinc-800 relative group">
-          <div class="mb-3">
-            <span class="text-3xl">${s.icon || '✨'}</span>
+        <div class="p-5 rounded-2xl bg-zinc-900 border border-zinc-800 relative group flex flex-col justify-between">
+          <div>
+            <div class="mb-3">
+              <span class="text-3xl">${s.icon || '✨'}</span>
+            </div>
+            <h4 class="font-playfair font-bold text-lg text-white">${s.title}</h4>
+            <p class="text-xs text-zinc-400 mt-1 mb-4 leading-relaxed">${s.description || ''}</p>
           </div>
-          <h4 class="font-playfair font-bold text-lg text-white">${s.title}</h4>
-          <p class="text-xs text-zinc-400 mt-1 mb-4 leading-relaxed">${s.description}</p>
-          <button onclick="deleteService('${s.id}')" class="text-xs text-rose-400 hover:text-rose-300">
-            🗑️ Remove Service
-          </button>
+          <div class="pt-3 border-t border-zinc-800 flex items-center justify-between text-xs">
+            <button onclick="editService('${s.id}')" class="text-gold hover:text-amber-300 font-medium py-1 px-2.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 transition">
+              ✏️ Edit Service
+            </button>
+            <button onclick="deleteService('${s.id}')" class="text-rose-400 hover:text-rose-300 font-medium py-1 px-2.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 transition">
+              🗑️ Remove
+            </button>
+          </div>
         </div>
       `).join('');
     }
 
+    function editService(id) {
+      const services = StorageDB.getServices();
+      const s = services.find(item => item.id === id);
+      if (!s) return;
+      document.getElementById('service-edit-id').value = s.id;
+      document.getElementById('service-icon').value = s.icon || '✨';
+      document.getElementById('service-title').value = s.title || '';
+      document.getElementById('service-desc').value = s.description || '';
+      document.getElementById('modal-service-title').textContent = 'Edit Service Offering';
+      document.getElementById('btn-save-service').textContent = 'Update Service';
+      openModal('modal-service');
+    }
+
     function deleteService(id) {
       if (confirm("Delete this service offering?")) {
-        let services = StorageDB.getServices();
-        services = services.filter(s => s.id !== id);
-        StorageDB.saveServices(services);
+        StorageDB.deleteService(id);
         renderServicesAdmin();
       }
     }
@@ -917,9 +966,13 @@
     function renderReviewsAdmin() {
       const reviews = StorageDB.getTestimonials();
       const container = document.getElementById('admin-reviews-list');
+      if (!reviews || reviews.length === 0) {
+        container.innerHTML = '<div class="text-center py-12 text-zinc-500 text-sm">No client reviews yet. Clients can submit reviews via the review page, or you can click "+ Add Review" to add one.</div>';
+        return;
+      }
       container.innerHTML = reviews.map(r => `
-        <div class="p-5 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-start justify-between">
-          <div class="space-y-1">
+        <div class="p-5 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-start justify-between gap-4">
+          <div class="space-y-1 flex-1">
             <div class="flex items-center space-x-2">
               <span class="text-lg">${r.emoji || '👰'}</span>
               <h4 class="font-semibold text-white">${r.name}</h4>
@@ -928,18 +981,35 @@
             <p class="text-xs text-zinc-300 italic">"${r.text}"</p>
             ${r.date ? `<span class="text-[10px] text-zinc-500 block">Submitted: ${r.date}</span>` : ''}
           </div>
-          <button onclick="deleteReview('${r.id}')" class="text-xs text-rose-400 hover:text-rose-300 p-2">
-            🗑️ Delete
-          </button>
+          <div class="flex items-center space-x-2 text-xs shrink-0">
+            <button onclick="editReview('${r.id}')" class="text-gold hover:text-amber-300 font-medium py-1 px-2.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 transition">
+              ✏️ Edit
+            </button>
+            <button onclick="deleteReview('${r.id}')" class="text-rose-400 hover:text-rose-300 font-medium py-1 px-2.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 transition">
+              🗑️ Delete
+            </button>
+          </div>
         </div>
       `).join('');
     }
 
+    function editReview(id) {
+      const reviews = StorageDB.getTestimonials();
+      const r = reviews.find(item => item.id === id);
+      if (!r) return;
+      document.getElementById('review-edit-id').value = r.id;
+      document.getElementById('review-client-name').value = r.name || '';
+      document.getElementById('review-rating').value = String(r.rating || 5);
+      document.getElementById('review-emoji').value = r.emoji || '👰';
+      document.getElementById('review-text').value = r.text || '';
+      document.getElementById('modal-review-title').textContent = 'Edit Client Review';
+      document.getElementById('btn-save-review').textContent = 'Update Review';
+      openModal('modal-review');
+    }
+
     function deleteReview(id) {
       if (confirm("Delete this review?")) {
-        let reviews = StorageDB.getTestimonials();
-        reviews = reviews.filter(r => r.id !== id);
-        StorageDB.saveTestimonials(reviews);
+        StorageDB.deleteTestimonial(id);
         renderReviewsAdmin();
         renderDashboard();
       }
@@ -1120,28 +1190,57 @@
       m.classList.remove('flex');
     }
 
-    function openAddPhotoModal() { openModal('modal-photo'); }
-    function openAddServiceModal() { openModal('modal-service'); }
-    function openAddReviewModal() { openModal('modal-review'); }
+    function openAddPhotoModal() {
+      document.getElementById('form-add-photo').reset();
+      document.getElementById('photo-edit-id').value = '';
+      document.getElementById('modal-photo-title').textContent = 'Add Portfolio Photo';
+      document.getElementById('btn-save-photo').textContent = 'Save Photo to Portfolio';
+      openModal('modal-photo');
+    }
+    function openAddServiceModal() {
+      document.getElementById('form-add-service').reset();
+      document.getElementById('service-edit-id').value = '';
+      document.getElementById('service-icon').value = '✨';
+      document.getElementById('modal-service-title').textContent = 'Add New Service';
+      document.getElementById('btn-save-service').textContent = 'Save Service';
+      openModal('modal-service');
+    }
+    function openAddReviewModal() {
+      document.getElementById('form-add-review').reset();
+      document.getElementById('review-edit-id').value = '';
+      document.getElementById('review-rating').value = '5';
+      document.getElementById('review-emoji').value = '👰';
+      document.getElementById('modal-review-title').textContent = 'Add Client Review';
+      document.getElementById('btn-save-review').textContent = 'Publish Review';
+      openModal('modal-review');
+    }
     function openNewAptModal() { openModal('modal-apt'); }
 
-    // Handlers for Add Modals
+    // Handlers for Add / Edit Modals
     document.getElementById('form-add-photo').addEventListener('submit', (e) => {
       e.preventDefault();
+      const editId = document.getElementById('photo-edit-id').value;
       const title = document.getElementById('photo-title').value;
       const category = document.getElementById('photo-category').value;
       const urlInput = document.getElementById('photo-url').value;
       const fileInput = document.getElementById('photo-file');
 
       function savePhoto(finalUrl) {
-        const list = StorageDB.getPortfolio();
-        list.unshift({
-          id: 'p-' + Date.now(),
-          title,
-          category,
-          url: finalUrl
-        });
-        StorageDB.savePortfolio(list);
+        if (editId) {
+          StorageDB.updatePhoto({
+            id: editId,
+            title,
+            category,
+            url: finalUrl
+          });
+        } else {
+          StorageDB.addPhoto({
+            id: 'p-' + Date.now(),
+            title,
+            category,
+            url: finalUrl
+          });
+        }
         renderPortfolioAdmin();
         closeModal('modal-photo');
         document.getElementById('form-add-photo').reset();
@@ -1162,18 +1261,26 @@
 
     document.getElementById('form-add-service').addEventListener('submit', (e) => {
       e.preventDefault();
+      const editId = document.getElementById('service-edit-id').value;
       const title = document.getElementById('service-title').value;
       const icon = document.getElementById('service-icon').value || '✨';
       const description = document.getElementById('service-desc').value;
 
-      const list = StorageDB.getServices();
-      list.push({
-        id: 's-' + Date.now(),
-        title,
-        icon,
-        description
-      });
-      StorageDB.saveServices(list);
+      if (editId) {
+        StorageDB.updateService({
+          id: editId,
+          title,
+          icon,
+          description
+        });
+      } else {
+        StorageDB.addService({
+          id: 's-' + Date.now(),
+          title,
+          icon,
+          description
+        });
+      }
       renderServicesAdmin();
       closeModal('modal-service');
       document.getElementById('form-add-service').reset();
@@ -1181,22 +1288,32 @@
 
     document.getElementById('form-add-review').addEventListener('submit', (e) => {
       e.preventDefault();
+      const editId = document.getElementById('review-edit-id').value;
       const name = document.getElementById('review-client-name').value;
       const rating = parseInt(document.getElementById('review-rating').value, 10);
       const emoji = document.getElementById('review-emoji').value || '👰';
       const text = document.getElementById('review-text').value;
 
-      const list = StorageDB.getTestimonials();
-      list.unshift({
-        id: 't-' + Date.now(),
-        name,
-        rating,
-        emoji,
-        text,
-        status: 'approved',
-        date: new Date().toISOString().slice(0, 10)
-      });
-      StorageDB.saveTestimonials(list);
+      if (editId) {
+        StorageDB.updateTestimonial({
+          id: editId,
+          name,
+          rating,
+          emoji,
+          text,
+          status: 'approved'
+        });
+      } else {
+        StorageDB.addTestimonial({
+          id: 't-' + Date.now(),
+          name,
+          rating,
+          emoji,
+          text,
+          status: 'approved',
+          date: new Date().toISOString().slice(0, 10)
+        });
+      }
       renderReviewsAdmin();
       renderDashboard();
       closeModal('modal-review');

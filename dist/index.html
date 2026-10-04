@@ -555,14 +555,13 @@
       const select = document.getElementById('service');
       
       select.innerHTML = '<option value="">Select a service</option>' + services.map(s => `
-        <option value="${s.title}">${s.title} ${s.price ? `(${s.price})` : ''}</option>
+        <option value="${s.title}">${s.title}</option>
       `).join('');
 
       container.innerHTML = services.map(s => `
         <div class="service-card group p-8 rounded-2xl bg-zinc-50 dark:bg-zinc-900/80 border-2 border-transparent hover:border-gold shadow-md hover:shadow-2xl">
-          <div class="flex items-center justify-between mb-4">
+          <div class="mb-4">
             <span class="text-4xl p-3 rounded-xl bg-gold/10 inline-block">${s.icon || '✨'}</span>
-            ${s.price ? `<span class="text-gold font-bold text-sm bg-gold/10 px-3 py-1 rounded-full">${s.price}</span>` : ''}
           </div>
           <h3 class="text-2xl font-playfair font-bold mb-3 group-hover:text-gold transition-colors">${s.title}</h3>
           <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">

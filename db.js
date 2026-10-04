@@ -23,71 +23,61 @@ const DEFAULT_SETTINGS = {
   adminPassword: "admin", // default password
   emailServiceKey: "", // Web3Forms or EmailJS key
   experienceYears: "5+",
-  happyBrides: "500+",
-  currencySymbol: "₹"
+  happyBrides: "500+"
 };
 
 const DEFAULT_SERVICES = [
   {
     id: "s1",
     title: "Bridal Makeup",
-    price: "₹18,000",
     description: "Stunning, long-lasting bridal looks that make your special day unforgettable.",
     icon: "👰"
   },
   {
     id: "s2",
     title: "Engagement Makeup",
-    price: "₹12,000",
     description: "Elegant and sophisticated looks for your engagement ceremony.",
     icon: "💍"
   },
   {
     id: "s3",
     title: "Reception Makeup",
-    price: "₹15,000",
     description: "Glamorous makeup that photographs beautifully for your reception.",
     icon: "✨"
   },
   {
     id: "s4",
     title: "Party Makeup",
-    price: "₹6,000",
     description: "Bold and beautiful looks for parties and special occasions.",
     icon: "🎉"
   },
   {
     id: "s5",
     title: "HD Makeup",
-    price: "₹14,000",
     description: "Camera-ready, flawless makeup perfect for photography and videography.",
     icon: "📸"
   },
   {
     id: "s6",
     title: "Airbrush Makeup",
-    price: "₹22,000",
     description: "Lightweight, flawless finish that lasts all day and night.",
     icon: "🎨"
   },
   {
     id: "s7",
     title: "Editorial Makeup",
-    price: "₹10,000",
     description: "Creative, artistic looks for fashion shoots and editorials.",
     icon: "📷"
   },
   {
     id: "s8",
     title: "Fashion Shoot",
-    price: "₹12,000",
     description: "High-fashion makeup for professional modeling and shoots.",
     icon: "👗"
   },
   {
     id: "s9",
     title: "Hair Styling",
-    price: "₹4,500",
     description: "Professional hair styling to complete your perfect look.",
     icon: "💇"
   }
@@ -230,7 +220,15 @@ const StorageDB = {
   },
   init() {
     if (!localStorage.getItem(DB_KEYS.SETTINGS)) this.set(DB_KEYS.SETTINGS, DEFAULT_SETTINGS);
-    if (!localStorage.getItem(DB_KEYS.SERVICES)) this.set(DB_KEYS.SERVICES, DEFAULT_SERVICES);
+    if (!localStorage.getItem(DB_KEYS.SERVICES)) {
+      this.set(DB_KEYS.SERVICES, DEFAULT_SERVICES);
+    } else {
+      const current = this.get(DB_KEYS.SERVICES, []);
+      if (current.some(s => s.price)) {
+        current.forEach(s => delete s.price);
+        this.set(DB_KEYS.SERVICES, current);
+      }
+    }
     if (!localStorage.getItem(DB_KEYS.PORTFOLIO)) this.set(DB_KEYS.PORTFOLIO, DEFAULT_PORTFOLIO);
     if (!localStorage.getItem(DB_KEYS.TESTIMONIALS)) this.set(DB_KEYS.TESTIMONIALS, DEFAULT_TESTIMONIALS);
     if (!localStorage.getItem(DB_KEYS.APPOINTMENTS)) this.set(DB_KEYS.APPOINTMENTS, DEFAULT_APPOINTMENTS);

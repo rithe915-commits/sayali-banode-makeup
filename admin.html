@@ -609,7 +609,14 @@
   </div>
 
   <!-- Shared DB Script -->
-  <script src="db.js"></script>
+  
+  <script src="/db.js"></script>
+  <script>
+    if (typeof StorageDB === 'undefined') {
+      document.write('<script src="../db.js"><\/script>');
+    }
+  </script>
+
 
   <!-- Admin Controller Logic -->
   <script>

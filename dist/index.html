@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sayali Banode Makeup Artist | Professional Bridal & Party Makeup</title>
   <meta name="description" content="Premium makeup artistry for weddings, parties, and special occasions. Creating flawless, elegant, and unforgettable looks with personalized beauty experience." />
-  <meta name="keywords" content="makeup artist, bridal makeup, party makeup, HD makeup, airbrush makeup, Mumbai makeup artist, professional makeup" />
+  <meta name="keywords" content="makeup artist, bridal makeup, party makeup, HD makeup, airbrush makeup, Amravati makeup artist, professional makeup" />
 
   <!-- Google Fonts: Playfair Display + Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -319,18 +319,18 @@
       <!-- Testimonial Carousel Card -->
       <div class="relative glass p-8 md:p-14 rounded-3xl border-2 border-gold/30 shadow-2xl">
         <div class="text-5xl mb-6">★★★★★</div>
-        <div id="testimonial-container" class="min-h-[160px] flex flex-col justify-center transition-opacity duration-300">
+        <div id="testimonial-container" class="min-h-[140px] flex flex-col justify-center transition-opacity duration-300">
           <p id="testimonial-text" class="text-xl md:text-2xl font-playfair italic text-zinc-700 dark:text-zinc-200 mb-6 leading-relaxed">
-            "Sayali made me look absolutely stunning on my wedding day! Her attention to detail and professionalism is unmatched. Highly recommended!"
+            "Every bride's radiance and confidence is our true celebration. Verified reviews from our clients will be featured here as they share their wedding moments."
           </p>
-          <div class="flex items-center justify-center space-x-3">
-            <span id="testimonial-emoji" class="text-3xl">👰</span>
-            <h4 id="testimonial-name" class="font-bold text-lg text-zinc-900 dark:text-white">Priya Sharma</h4>
+          <div id="testimonial-author" class="flex items-center justify-center space-x-3">
+            <span id="testimonial-emoji" class="text-3xl">✨</span>
+            <h4 id="testimonial-name" class="font-bold text-lg text-zinc-900 dark:text-white">Sayali Banode Makeup Artist • Amravati</h4>
           </div>
         </div>
 
-        <!-- Carousel Buttons -->
-        <div class="flex items-center justify-center space-x-4 mt-8">
+        <!-- Carousel Buttons (Shown when reviews exist) -->
+        <div id="testimonial-controls" class="hidden items-center justify-center space-x-4 mt-8">
           <button id="prev-test" aria-label="Previous Review" class="p-3 rounded-full border border-gold text-gold hover:bg-gold hover:text-black transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
           </button>
@@ -467,7 +467,7 @@
             📍
           </div>
           <h3 class="font-playfair font-bold text-xl mb-1">Location</h3>
-          <p id="contact-location-text" class="text-zinc-600 dark:text-zinc-400 font-medium text-sm">Mumbai, Maharashtra</p>
+          <p id="contact-location-text" class="text-zinc-600 dark:text-zinc-400 font-medium text-sm">Amravati, Maharashtra</p>
         </div>
       </div>
 
@@ -491,7 +491,7 @@
     <div class="container mx-auto px-4 md:px-8 text-center">
       <h3 class="text-2xl font-playfair font-bold gradient-text mb-4 dynamic-artist-name">Sayali Banode</h3>
       <p class="text-zinc-400 text-sm max-w-md mx-auto mb-6">
-        Professional bridal, reception, party, and editorial makeup artist based in Mumbai.
+        Professional bridal, reception, party, and editorial makeup artist based in Amravati, Maharashtra.
       </p>
       <div class="flex justify-center space-x-6 text-sm text-zinc-400 mb-8">
         <a href="#home" class="hover:text-gold transition-colors">Home</a>
@@ -643,11 +643,22 @@
     const testText = document.getElementById('testimonial-text');
     const testName = document.getElementById('testimonial-name');
     const testEmoji = document.getElementById('testimonial-emoji');
+    const testControls = document.getElementById('testimonial-controls');
     const dotsContainer = document.getElementById('testimonial-dots');
 
     function initTestimonials() {
       testimonials = StorageDB.getTestimonials();
-      if (!testimonials || testimonials.length === 0) return;
+      if (!testimonials || testimonials.length === 0) {
+        if (testControls) testControls.classList.add('hidden');
+        testText.textContent = `"Every bride's radiance and confidence is our true celebration. Verified reviews from our clients will be featured here as they share their wedding moments."`;
+        testName.textContent = "Sayali Banode Makeup Artist • Amravati";
+        testEmoji.textContent = "✨";
+        return;
+      }
+      if (testControls) {
+        testControls.classList.remove('hidden');
+        testControls.classList.add('flex');
+      }
       dotsContainer.innerHTML = testimonials.map((_, i) => `
         <span class="w-3 h-3 rounded-full ${i === 0 ? 'bg-gold' : 'bg-gold/30'} inline-block transition-all"></span>
       `).join('');
@@ -683,7 +694,7 @@
     });
 
     setInterval(() => {
-      if (!testimonials || testimonials.length === 0) return;
+      if (!testimonials || testimonials.length <= 1) return;
       currentTest = (currentTest + 1) % testimonials.length;
       updateTestimonial(currentTest);
     }, 6000);

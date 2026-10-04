@@ -123,14 +123,6 @@ INSERT INTO public.portfolio (id, title, category, url) VALUES
 ('p8', 'Glamorous Look', 'glam', 'https://images.pexels.com/photos/5149734/pexels-photo-5149734.jpeg')
 ON CONFLICT (id) DO NOTHING;
 
--- Seed Testimonials
-INSERT INTO public.testimonials (id, name, rating, emoji, text, status, date) VALUES
-('t1', 'Priya Sharma', 5, '👰', 'Sayali made me look absolutely stunning on my wedding day! Her attention to detail and professionalism is unmatched. Highly recommended!', 'approved', '2026-09-15'),
-('t2', 'Ananya Patel', 5, '💕', 'Best makeup artist in Mumbai! My makeup stayed flawless throughout my reception. Thank you Sayali for making me feel so beautiful!', 'approved', '2026-09-20'),
-('t3', 'Neha Desai', 5, '✨', 'I was so impressed with Sayali''s work. She understood exactly what I wanted and delivered beyond my expectations. Absolutely loved it!', 'approved', '2026-09-28'),
-('t4', 'Kavya Reddy', 5, '👑', 'Sayali is a true artist! She made me look like a princess on my special day. Her skills and friendly nature make her the best choice!', 'approved', '2026-10-01')
-ON CONFLICT (id) DO NOTHING;
-
 -- Seed Settings
 INSERT INTO public.settings (key, value) VALUES
 ('business', '{
@@ -139,7 +131,7 @@ INSERT INTO public.settings (key, value) VALUES
   "phone": "+91 7030477747",
   "whatsapp": "917030477747",
   "email": "sayali@example.com",
-  "location": "Mumbai, Maharashtra",
+  "location": "Amravati, Maharashtra",
   "instagram": "https://instagram.com/sayalibanodemakeup",
   "facebook": "https://facebook.com",
   "adminPassword": "admin",

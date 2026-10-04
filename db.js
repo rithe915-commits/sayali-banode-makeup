@@ -19,7 +19,7 @@ const DEFAULT_SETTINGS = {
   phone: "+91 7030477747",
   whatsapp: "917030477747",
   email: "sayali@example.com",
-  location: "Mumbai, Maharashtra",
+  location: "Amravati, Maharashtra",
   instagram: "https://instagram.com/sayalibanodemakeup",
   facebook: "https://facebook.com",
   adminPassword: "admin",
@@ -53,39 +53,9 @@ const DEFAULT_PORTFOLIO = [
   { id: "p8", url: "https://images.pexels.com/photos/5149734/pexels-photo-5149734.jpeg", category: "glam", title: "Glamorous Look" }
 ];
 
-const DEFAULT_TESTIMONIALS = [
-  { id: "t1", name: "Priya Sharma", rating: 5, text: "Sayali made me look absolutely stunning on my wedding day! Her attention to detail and professionalism is unmatched. Highly recommended!", emoji: "👰", status: "approved", date: "2026-09-15" },
-  { id: "t2", name: "Ananya Patel", rating: 5, text: "Best makeup artist in Mumbai! My makeup stayed flawless throughout my reception. Thank you Sayali for making me feel so beautiful!", emoji: "💕", status: "approved", date: "2026-09-20" },
-  { id: "t3", name: "Neha Desai", rating: 5, text: "I was so impressed with Sayali's work. She understood exactly what I wanted and delivered beyond my expectations. Absolutely loved it!", emoji: "✨", status: "approved", date: "2026-09-28" },
-  { id: "t4", name: "Kavya Reddy", rating: 5, text: "Sayali is a true artist! She made me look like a princess on my special day. Her skills and friendly nature make her the best choice!", emoji: "👑", status: "approved", date: "2026-10-01" }
-];
+const DEFAULT_TESTIMONIALS = [];
 
-const DEFAULT_APPOINTMENTS = [
-  {
-    id: "apt-101",
-    name: "Aaradhya Joshi",
-    phone: "+91 98201 12345",
-    email: "aaradhya@example.com",
-    eventDate: "2026-10-18",
-    service: "Bridal Makeup",
-    message: "Destination wedding at Taj Lands End. Need makeup for morning wedding and evening sangeet.",
-    status: "Confirmed",
-    createdAt: "2026-10-02T14:30:00Z",
-    notes: "Advance 5,000 received. Outfit color: Crimson Red."
-  },
-  {
-    id: "apt-102",
-    name: "Simran Kaur",
-    phone: "+91 98334 56789",
-    email: "simran@example.com",
-    eventDate: "2026-10-24",
-    service: "Reception Makeup",
-    message: "Reception party makeup with HD finish. Venue is in Bandra.",
-    status: "Pending",
-    createdAt: "2026-10-03T09:15:00Z",
-    notes: ""
-  }
-];
+const DEFAULT_APPOINTMENTS = [];
 
 let supabaseClient = null;
 
@@ -130,10 +100,37 @@ const StorageDB = {
         this.set(DB_KEYS.SERVICES, current);
       }
     }
+    // Settings
+    let settings = this.get(DB_KEYS.SETTINGS, null);
+    if (!settings) {
+      this.set(DB_KEYS.SETTINGS, DEFAULT_SETTINGS);
+    } else if (settings.location === "Mumbai, Maharashtra" || !settings.location) {
+      settings.location = "Amravati, Maharashtra";
+      this.set(DB_KEYS.SETTINGS, settings);
+    }
+
     if (!localStorage.getItem(DB_KEYS.PORTFOLIO)) this.set(DB_KEYS.PORTFOLIO, DEFAULT_PORTFOLIO);
-    if (!localStorage.getItem(DB_KEYS.TESTIMONIALS)) this.set(DB_KEYS.TESTIMONIALS, DEFAULT_TESTIMONIALS);
-    if (!localStorage.getItem(DB_KEYS.APPOINTMENTS)) this.set(DB_KEYS.APPOINTMENTS, DEFAULT_APPOINTMENTS);
-    if (!localStorage.getItem(DB_KEYS.BLOCKED_DATES)) this.set(DB_KEYS.BLOCKED_DATES, ["2026-10-18"]);
+
+    // Clean dummy testimonials if present
+    let testimonials = this.get(DB_KEYS.TESTIMONIALS, []);
+    if (testimonials.some(t => ['t1', 't2', 't3', 't4'].includes(t.id))) {
+      testimonials = testimonials.filter(t => !['t1', 't2', 't3', 't4'].includes(t.id));
+      this.set(DB_KEYS.TESTIMONIALS, testimonials);
+    }
+
+    // Clean dummy appointments if present
+    let appointments = this.get(DB_KEYS.APPOINTMENTS, []);
+    if (appointments.some(a => ['apt-101', 'apt-102'].includes(a.id))) {
+      appointments = appointments.filter(a => !['apt-101', 'apt-102'].includes(a.id));
+      this.set(DB_KEYS.APPOINTMENTS, appointments);
+    }
+
+    // Clean dummy blocked dates if present
+    let blocked = this.get(DB_KEYS.BLOCKED_DATES, []);
+    if (blocked.includes("2026-10-18")) {
+      blocked = blocked.filter(d => d !== "2026-10-18");
+      this.set(DB_KEYS.BLOCKED_DATES, blocked);
+    }
     
     // Attempt background sync from Supabase if configured
     this.syncFromSupabase();

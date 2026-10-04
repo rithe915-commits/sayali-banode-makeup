@@ -4,5 +4,8 @@
   "private": true,
   "scripts": {
     "build": "node build.js"
+  },
+  "dependencies": {
+    "nodemailer": "^10.0.14"
   }
 }

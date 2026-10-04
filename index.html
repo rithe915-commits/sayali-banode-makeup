@@ -815,29 +815,22 @@
       };
       StorageDB.addAppointment(newApt);
 
-      // 2. Automated Email via Web3Forms (if configured)
-      const settings = StorageDB.getSettings();
-      if (settings.emailServiceKey) {
-        try {
-          await fetch('https://api.web3forms.com/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              access_key: settings.emailServiceKey,
-              subject: `New Bridal Booking: ${name} (${service}) - ${eventDate}`,
-              from_name: "Sayali Banode Website",
-              name: name,
-              phone: phone,
-              email: email,
-              event_date: eventDate,
-              service: service,
-              requirements: message,
-              message: `New booking request received on your website from ${name}.\nPhone: ${phone}\nEmail: ${email}\nDate: ${eventDate}\nService: ${service}\nMessage: ${message}`
-            })
-          });
-        } catch (err) {
-          console.warn("Email service transmission:", err);
-        }
+      // 2. Automated Instant Emails via Vercel Gmail Service (rivasatechnologies@gmail.com)
+      try {
+        await fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            clientName: name,
+            clientPhone: phone,
+            clientEmail: email,
+            eventDate: eventDate,
+            service: service,
+            message: message
+          })
+        });
+      } catch (err) {
+        console.warn("Email service transmission:", err);
       }
 
       submitBtn.disabled = false;

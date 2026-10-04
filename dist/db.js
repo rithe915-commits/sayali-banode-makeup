@@ -23,7 +23,6 @@ const DEFAULT_SETTINGS = {
   instagram: "https://instagram.com/sayalibanodemakeup",
   facebook: "https://facebook.com",
   adminPassword: "admin",
-  emailServiceKey: "",
   experienceYears: "5+",
   happyBrides: "500+"
 };

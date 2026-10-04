@@ -435,16 +435,23 @@
               </div>
             </div>
 
-            <!-- Email Notification Integration -->
+            <!-- Automated Email Notification Status -->
             <div class="border-b border-zinc-800 pb-6">
-              <h3 class="text-base font-semibold text-gold mb-2">📧 Automated Email Notification Service</h3>
-              <p class="text-xs text-zinc-400 mb-4">
-                When a customer books, an instant email is delivered to Sayali and a confirmation is emailed to the client. You can enter your free Web3Forms Access Key below (or leave empty to receive leads in the Admin + WhatsApp).
-              </p>
-              <div>
-                <label class="block text-xs font-medium text-zinc-400 mb-1">Web3Forms / Email Service Access Key (Optional)</label>
-                <input type="text" id="setting-email-key" placeholder="e.g. 12345678-abcd-efgh-ijkl-1234567890ab" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white font-mono focus:border-gold outline-none" />
-                <span class="text-[11px] text-zinc-500 mt-1 block">Free at <a href="https://web3forms.com" target="_blank" class="text-gold underline">web3forms.com</a>. Sends instant emails without backend servers.</span>
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800">
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <span class="text-base">📨</span>
+                    <h3 class="text-sm font-semibold text-white">Automated Booking Emails</h3>
+                  </div>
+                  <p class="text-xs text-zinc-400 mt-1">
+                    Sent automatically from <code class="text-amber-300 font-mono">rivasatechnologies@gmail.com</code> via Vercel <code class="text-amber-300 font-mono">GMAIL_APP_PASSWORD</code> to Sayali & the customer upon each booking.
+                  </p>
+                </div>
+                <div>
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-800">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span> Active (Gmail SMTP)
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -1030,7 +1037,6 @@
       document.getElementById('setting-location').value = s.location || '';
       document.getElementById('setting-instagram').value = s.instagram || '';
       document.getElementById('setting-facebook').value = s.facebook || '';
-      document.getElementById('setting-email-key').value = s.emailServiceKey || '';
       document.getElementById('setting-password').value = s.adminPassword || 'admin';
       updateSupabaseBadge();
     }
@@ -1060,7 +1066,6 @@
         location: document.getElementById('setting-location').value,
         instagram: document.getElementById('setting-instagram').value,
         facebook: document.getElementById('setting-facebook').value,
-        emailServiceKey: document.getElementById('setting-email-key').value,
         adminPassword: document.getElementById('setting-password').value
       };
       StorageDB.saveSettings(updated);
@@ -1183,6 +1188,20 @@
         status: 'Confirmed',
         createdAt: new Date().toISOString()
       });
+
+      // Send automated confirmation email via Vercel Gmail service
+      fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clientName: name,
+          clientPhone: phone,
+          clientEmail: email,
+          eventDate,
+          service,
+          message
+        })
+      }).catch(err => console.warn('Email trigger error:', err));
 
       renderDashboard();
       renderAppointmentsTable();

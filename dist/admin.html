@@ -12,6 +12,8 @@
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- QRCode.js Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -443,6 +445,30 @@
                 <label class="block text-xs font-medium text-zinc-400 mb-1">Web3Forms / Email Service Access Key (Optional)</label>
                 <input type="text" id="setting-email-key" placeholder="e.g. 12345678-abcd-efgh-ijkl-1234567890ab" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white font-mono focus:border-gold outline-none" />
                 <span class="text-[11px] text-zinc-500 mt-1 block">Free at <a href="https://web3forms.com" target="_blank" class="text-gold underline">web3forms.com</a>. Sends instant emails without backend servers.</span>
+              </div>
+            </div>
+
+            <!-- Supabase Cloud Database Integration -->
+            <div class="border-b border-zinc-800 pb-6">
+              <h3 class="text-base font-semibold text-gold mb-2">⚡ Supabase Cloud Database</h3>
+              <p class="text-xs text-zinc-400 mb-4">
+                Connect your Supabase project to sync all appointments, portfolio photos, and reviews permanently in the cloud. Run the included <code class="text-amber-300">supabase-schema.sql</code> script in your Supabase SQL Editor once to set up the tables!
+              </p>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-zinc-400 mb-1">Supabase Project URL</label>
+                  <input type="url" id="setting-supabase-url" placeholder="https://yourproject.supabase.co" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white font-mono focus:border-gold outline-none" />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-zinc-400 mb-1">Supabase Anon / Public Key</label>
+                  <input type="password" id="setting-supabase-key" placeholder="eyJhbGciOi..." class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white font-mono focus:border-gold outline-none" />
+                </div>
+              </div>
+              <div class="mt-3 flex items-center space-x-3">
+                <button type="button" onclick="testSupabaseConnection()" class="px-4 py-2 rounded-xl bg-emerald-950 hover:bg-emerald-900 text-emerald-400 border border-emerald-800 text-xs font-semibold transition">
+                  🔌 Test Supabase Connection
+                </button>
+                <span id="supabase-status-badge" class="text-xs text-zinc-500">Not connected (using local cache)</span>
               </div>
             </div>
 
@@ -1004,7 +1030,53 @@
       document.getElementById('setting-instagram').value = s.instagram || '';
       document.getElementById('setting-facebook').value = s.facebook || '';
       document.getElementById('setting-email-key').value = s.emailServiceKey || '';
+      document.getElementById('setting-supabase-url').value = s.supabaseUrl || '';
+      document.getElementById('setting-supabase-key').value = s.supabaseAnonKey || '';
       document.getElementById('setting-password').value = s.adminPassword || 'admin';
+      updateSupabaseBadge();
+    }
+
+    function updateSupabaseBadge() {
+      const s = StorageDB.getSettings();
+      const badge = document.getElementById('supabase-status-badge');
+      if (s.supabaseUrl && s.supabaseAnonKey) {
+        badge.textContent = "Configured (Cloud Synced)";
+        badge.className = "text-xs text-emerald-400 font-semibold";
+      } else {
+        badge.textContent = "Not connected (using local cache)";
+        badge.className = "text-xs text-zinc-500";
+      }
+    }
+
+    async function testSupabaseConnection() {
+      const url = document.getElementById('setting-supabase-url').value.trim();
+      const key = document.getElementById('setting-supabase-key').value.trim();
+      const badge = document.getElementById('supabase-status-badge');
+
+      if (!url || !key) {
+        alert("Please enter both the Supabase Project URL and Anon Key.");
+        return;
+      }
+
+      badge.textContent = "Testing connection...";
+      badge.className = "text-xs text-amber-400 font-semibold";
+
+      try {
+        if (!window.supabase) {
+          throw new Error("Supabase JS library not loaded.");
+        }
+        const client = window.supabase.createClient(url, key);
+        const { data, error } = await client.from('services').select('count', { count: 'exact', head: true });
+        if (error) throw error;
+        badge.textContent = "Connected successfully to Supabase!";
+        badge.className = "text-xs text-emerald-400 font-semibold";
+        alert("Success! Connected to your Supabase project.");
+      } catch (err) {
+        console.error(err);
+        badge.textContent = "Connection failed. Check URL, key, or table creation.";
+        badge.className = "text-xs text-rose-400 font-semibold";
+        alert("Could not connect to Supabase: " + (err.message || err));
+      }
     }
 
     document.getElementById('settings-form').addEventListener('submit', (e) => {
@@ -1020,9 +1092,12 @@
         instagram: document.getElementById('setting-instagram').value,
         facebook: document.getElementById('setting-facebook').value,
         emailServiceKey: document.getElementById('setting-email-key').value,
+        supabaseUrl: document.getElementById('setting-supabase-url').value.trim(),
+        supabaseAnonKey: document.getElementById('setting-supabase-key').value.trim(),
         adminPassword: document.getElementById('setting-password').value
       };
       StorageDB.saveSettings(updated);
+      updateSupabaseBadge();
       alert("Settings saved successfully! Website and admin are updated.");
     });
 

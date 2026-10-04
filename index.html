@@ -817,6 +817,11 @@
 
       // 2. Automated Instant Emails via Vercel Gmail Service (rivasatechnologies@gmail.com)
       try {
+        const settings = StorageDB.getSettings();
+        const notificationEmails = (settings.notificationEmails && settings.notificationEmails.length > 0)
+          ? settings.notificationEmails.slice(0, 5)
+          : (settings.email ? [settings.email] : ['rivasatechnologies@gmail.com']);
+
         await fetch('/api/send-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -826,7 +831,8 @@
             clientEmail: email,
             eventDate: eventDate,
             service: service,
-            message: message
+            message: message,
+            notificationEmails: notificationEmails
           })
         });
       } catch (err) {

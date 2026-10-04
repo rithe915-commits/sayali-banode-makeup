@@ -19,6 +19,7 @@ const DEFAULT_SETTINGS = {
   phone: "+91 7030477747",
   whatsapp: "917030477747",
   email: "sayali@example.com",
+  notificationEmails: ["sayali@example.com"],
   location: "Amravati, Maharashtra",
   instagram: "https://instagram.com/sayalibanodemakeup",
   facebook: "https://facebook.com",
@@ -117,9 +118,17 @@ const StorageDB = {
     let settings = this.get(DB_KEYS.SETTINGS, null);
     if (!settings) {
       this.set(DB_KEYS.SETTINGS, DEFAULT_SETTINGS);
-    } else if (settings.location === "Mumbai, Maharashtra" || !settings.location) {
-      settings.location = "Amravati, Maharashtra";
-      this.set(DB_KEYS.SETTINGS, settings);
+    } else {
+      let modified = false;
+      if (settings.location === "Mumbai, Maharashtra" || !settings.location) {
+        settings.location = "Amravati, Maharashtra";
+        modified = true;
+      }
+      if (!settings.notificationEmails || !Array.isArray(settings.notificationEmails) || settings.notificationEmails.length === 0) {
+        settings.notificationEmails = settings.email ? [settings.email] : ["sayali@example.com"];
+        modified = true;
+      }
+      if (modified) this.set(DB_KEYS.SETTINGS, settings);
     }
 
     if (!localStorage.getItem(DB_KEYS.PORTFOLIO)) this.set(DB_KEYS.PORTFOLIO, DEFAULT_PORTFOLIO);

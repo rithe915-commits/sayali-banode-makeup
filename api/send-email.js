@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { clientName, clientPhone, clientEmail, eventDate, service, message } = req.body || {};
+    const { clientName, clientPhone, clientEmail, eventDate, service, message, notificationEmails } = req.body || {};
 
     if (!clientName || !clientPhone || !eventDate) {
       return res.status(400).json({ error: 'Missing required booking fields (clientName, clientPhone, eventDate)' });
@@ -31,6 +31,19 @@ module.exports = async (req, res) => {
       process.env.SMTP_USER ||
       'rivasatechnologies@gmail.com'
     ).trim();
+
+    // Collect recipient notification emails (Sayali's emails, up to 5)
+    let recipients = [];
+    if (Array.isArray(notificationEmails) && notificationEmails.length > 0) {
+      recipients = notificationEmails
+        .map(e => (typeof e === 'string' ? e.trim().toLowerCase() : ''))
+        .filter(e => e.includes('@') && e.includes('.'))
+        .slice(0, 5);
+    }
+    if (recipients.length === 0) {
+      recipients = [senderEmail];
+    }
+    const toRecipients = Array.from(new Set(recipients)).slice(0, 5);
 
     const appPassword = (
       process.env.GMAIL_APP_PASSWORD ||
@@ -62,10 +75,10 @@ module.exports = async (req, res) => {
 
     const cleanPhone = (clientPhone || '').replace(/[^0-9]/g, '');
 
-    // 1. Send Email to Sayali / Admin
+    // 1. Send Email to Sayali / Admin (up to 5 notification recipients)
     const adminMailOptions = {
       from: `"Sayali Banode Makeup" <${senderEmail}>`,
-      to: senderEmail,
+      to: toRecipients.join(', '),
       replyTo: clientEmail || senderEmail,
       subject: `✨ New Appointment Request: ${clientName} - ${service || 'Bridal Makeup'}`,
       html: `

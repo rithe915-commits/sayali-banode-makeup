@@ -420,6 +420,33 @@
               </div>
             </div>
 
+            <!-- Appointment Notification Recipients (Max 5) -->
+            <div class="border-b border-zinc-800 pb-6">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-base font-semibold text-gold">📧 Appointment Notification Emails</h3>
+                <span id="notif-count-badge" class="text-xs text-zinc-400 font-mono px-2.5 py-1 rounded-full bg-zinc-800 border border-zinc-700">0 / 5 configured</span>
+              </div>
+              <p class="text-xs text-zinc-400 mb-4">
+                Enter up to <strong>5 email addresses</strong> to receive instant alerts whenever a new appointment is booked.
+              </p>
+              
+              <!-- Tag list of emails -->
+              <div id="notification-emails-list" class="flex flex-wrap gap-2 mb-3">
+                <!-- Dynamically rendered email pills -->
+              </div>
+
+              <!-- Add email row -->
+              <div id="add-email-row" class="flex items-center gap-2 max-w-md">
+                <input type="email" id="new-notif-email" placeholder="e.g. sayali@example.com" class="flex-1 px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+                <button type="button" onclick="addNotificationEmail()" class="px-4 py-2.5 rounded-xl bg-gold hover:bg-gold-dark text-black font-semibold text-xs transition">
+                  + Add Email
+                </button>
+              </div>
+              <p id="max-emails-msg" class="text-xs text-amber-400 mt-2 hidden font-medium">
+                Maximum 5 notification emails configured. Remove one to add another.
+              </p>
+            </div>
+
             <!-- Social Links -->
             <div class="border-b border-zinc-800 pb-6">
               <h3 class="text-base font-semibold text-gold mb-4">🌐 Social Profiles</h3>
@@ -987,7 +1014,64 @@
       window.open(`https://wa.me/?text=${text}`, '_blank');
     }
 
-    // 8. Settings Form
+    // 8. Settings Form & Notification Recipients (Max 5)
+    let currentNotificationEmails = [];
+
+    function renderNotificationEmails() {
+      const container = document.getElementById('notification-emails-list');
+      const countBadge = document.getElementById('notif-count-badge');
+      const addRow = document.getElementById('add-email-row');
+      const maxMsg = document.getElementById('max-emails-msg');
+      if (!container) return;
+
+      countBadge.textContent = `${currentNotificationEmails.length} / 5 configured`;
+
+      if (currentNotificationEmails.length === 0) {
+        container.innerHTML = `<span class="text-xs text-zinc-500 italic py-1">No notification emails added yet. Enter an email below to receive instant booking alerts.</span>`;
+      } else {
+        container.innerHTML = currentNotificationEmails.map((email, idx) => `
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-800 border border-gold/40 text-xs text-zinc-100 shadow-sm">
+            <span>✉️ ${email}</span>
+            <button type="button" onclick="removeNotificationEmail(${idx})" class="text-zinc-400 hover:text-rose-400 font-bold ml-1 text-sm leading-none transition" title="Remove">&times;</button>
+          </span>
+        `).join('');
+      }
+
+      if (currentNotificationEmails.length >= 5) {
+        addRow.classList.add('hidden');
+        maxMsg.classList.remove('hidden');
+      } else {
+        addRow.classList.remove('hidden');
+        maxMsg.classList.add('hidden');
+      }
+    }
+
+    function addNotificationEmail() {
+      const input = document.getElementById('new-notif-email');
+      if (!input) return;
+      const val = input.value.trim().toLowerCase();
+      if (!val || !val.includes('@') || !val.includes('.')) {
+        alert("Please enter a valid email address.");
+        return;
+      }
+      if (currentNotificationEmails.length >= 5) {
+        alert("You can add a maximum of 5 notification emails.");
+        return;
+      }
+      if (currentNotificationEmails.includes(val)) {
+        alert("This email address is already added.");
+        return;
+      }
+      currentNotificationEmails.push(val);
+      input.value = '';
+      renderNotificationEmails();
+    }
+
+    function removeNotificationEmail(idx) {
+      currentNotificationEmails.splice(idx, 1);
+      renderNotificationEmails();
+    }
+
     function loadSettingsForm() {
       const s = StorageDB.getSettings();
       document.getElementById('setting-artist-name').value = s.artistName || '';
@@ -998,6 +1082,11 @@
       document.getElementById('setting-instagram').value = s.instagram || '';
       document.getElementById('setting-facebook').value = s.facebook || '';
       document.getElementById('setting-password').value = s.adminPassword || 'admin';
+
+      currentNotificationEmails = s.notificationEmails && Array.isArray(s.notificationEmails)
+        ? [...s.notificationEmails].slice(0, 5)
+        : (s.email ? [s.email] : ['sayali@example.com']);
+      renderNotificationEmails();
     }
 
     document.getElementById('settings-form').addEventListener('submit', (e) => {
@@ -1009,13 +1098,13 @@
         phone: document.getElementById('setting-phone').value,
         whatsapp: document.getElementById('setting-whatsapp').value,
         email: document.getElementById('setting-email').value,
+        notificationEmails: currentNotificationEmails.slice(0, 5),
         location: document.getElementById('setting-location').value,
         instagram: document.getElementById('setting-instagram').value,
         facebook: document.getElementById('setting-facebook').value,
         adminPassword: document.getElementById('setting-password').value
       };
       StorageDB.saveSettings(updated);
-      updateSupabaseBadge();
       alert("Settings saved successfully! Website and admin are updated.");
     });
 
@@ -1136,6 +1225,11 @@
       });
 
       // Send automated confirmation email via Vercel Gmail service
+      const settings = StorageDB.getSettings();
+      const notificationEmails = (settings.notificationEmails && settings.notificationEmails.length > 0)
+        ? settings.notificationEmails.slice(0, 5)
+        : (settings.email ? [settings.email] : ['sayali@example.com']);
+
       fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1145,7 +1239,8 @@
           clientEmail: email,
           eventDate,
           service,
-          message
+          message,
+          notificationEmails
         })
       }).catch(err => console.warn('Email trigger error:', err));
 

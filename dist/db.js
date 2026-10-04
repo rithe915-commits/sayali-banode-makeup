@@ -290,7 +290,9 @@ const StorageDB = {
       if (client) {
         client.from('appointments').update({ status: newStatus }).eq('id', id).catch(console.warn);
       }
+      return apt;
     }
+    return null;
   },
 
   async deleteAppointment(id) {

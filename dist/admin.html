@@ -615,9 +615,20 @@
             <input type="date" id="apt-date" required class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
           </div>
         </div>
-        <div>
-          <label class="block text-xs font-semibold text-zinc-400 mb-1">Service Required *</label>
-          <input type="text" id="apt-service" required placeholder="e.g. Bridal Makeup" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-zinc-400 mb-1">Service Required *</label>
+            <input type="text" id="apt-service" required placeholder="e.g. Bridal Makeup" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-zinc-400 mb-1">Status</label>
+            <select id="apt-status" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none cursor-pointer">
+              <option value="Confirmed" selected>Confirmed (Send email)</option>
+              <option value="Pending">Pending</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
         </div>
         <div>
           <label class="block text-xs font-semibold text-zinc-400 mb-1">Notes / Requirements</label>
@@ -753,7 +764,11 @@
               <p class="text-xs text-zinc-400">${a.service} • 📅 ${a.eventDate}</p>
             </div>
             <div class="flex items-center space-x-2">
-              <span class="text-xs px-2.5 py-1 rounded-full font-medium ${getStatusBadge(a.status)}">${a.status}</span>
+              ${a.status === 'Pending' ? `
+                <button onclick="updateAppointmentStatus('${a.id}', 'Confirmed')" class="text-xs px-2.5 py-1 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition shadow-sm" title="Confirm booking & send confirmation email">✓ Confirm</button>
+              ` : `
+                <span class="text-xs px-2.5 py-1 rounded-full font-medium ${getStatusBadge(a.status)}">${a.status}</span>
+              `}
               <button onclick="openWhatsAppChat('${a.phone}', '${a.name}', '${a.service}', '${a.eventDate}')" title="WhatsApp client" class="p-1.5 rounded-lg bg-emerald-950 text-emerald-400 hover:bg-emerald-900 text-xs">💬</button>
             </div>
           </div>
@@ -828,13 +843,60 @@
       `).join('');
     }
 
-    function updateAppointmentStatus(id, newStatus) {
+    async function updateAppointmentStatus(id, newStatus) {
       const apts = StorageDB.getAppointments();
       const apt = apts.find(a => a.id === id);
-      if (apt) {
-        apt.status = newStatus;
-        StorageDB.saveAppointments(apts);
-        renderDashboard();
+      if (!apt) return;
+      if (apt.status === newStatus) return;
+
+      const prevStatus = apt.status;
+      apt.status = newStatus;
+      StorageDB.saveAppointments(apts);
+      if (typeof StorageDB.updateAppointmentStatus === 'function') {
+        StorageDB.updateAppointmentStatus(id, newStatus);
+      }
+      renderDashboard();
+      renderAppointmentsTable();
+
+      // Check customer email
+      if (apt.email && apt.email.includes('@')) {
+        showToast(`📧 Status changed to "${newStatus}". Sending email to ${apt.name}...`, 'info');
+
+        const settings = StorageDB.getSettings();
+        const notificationEmails = (settings.notificationEmails && settings.notificationEmails.length > 0)
+          ? settings.notificationEmails.slice(0, 5)
+          : (settings.email ? [settings.email] : ['rivasatechnologies@gmail.com']);
+
+        try {
+          const res = await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'status_update',
+              status: newStatus,
+              clientName: apt.name,
+              clientPhone: apt.phone,
+              clientEmail: apt.email,
+              eventDate: apt.eventDate,
+              service: apt.service,
+              message: apt.message,
+              notificationEmails
+            })
+          });
+          const data = await res.json();
+          if (data && data.success) {
+            showToast(`✅ Status updated to "${newStatus}". Email delivered to ${apt.email}!`, 'success');
+          } else if (data && data.warning) {
+            showToast(`⚠️ Status updated. Note: ${data.warning}`, 'warning');
+          } else {
+            showToast(`⚠️ Status updated. Email note: ${data.error || 'Check email configuration'}`, 'warning');
+          }
+        } catch (err) {
+          console.warn('Status email dispatch error:', err);
+          showToast(`⚠️ Status updated in database. Email dispatch error.`, 'warning');
+        }
+      } else {
+        showToast(`ℹ️ Status updated to "${newStatus}". (Client did not provide an email, contact via WhatsApp 💬)`, 'info');
       }
     }
 
@@ -1334,6 +1396,8 @@
       const eventDate = document.getElementById('apt-date').value;
       const service = document.getElementById('apt-service').value;
       const message = document.getElementById('apt-message').value;
+      const statusSelect = document.getElementById('apt-status');
+      const status = statusSelect ? statusSelect.value : 'Confirmed';
 
       StorageDB.addAppointment({
         id: 'apt-' + Date.now(),
@@ -1343,38 +1407,92 @@
         eventDate,
         service,
         message,
-        status: 'Confirmed',
+        status,
         createdAt: new Date().toISOString()
       });
-
-      // Send automated confirmation email via Vercel Gmail service
-      const settings = StorageDB.getSettings();
-      const notificationEmails = (settings.notificationEmails && settings.notificationEmails.length > 0)
-        ? settings.notificationEmails.slice(0, 5)
-        : (settings.email ? [settings.email] : ['sayali@example.com']);
-
-      fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          clientName: name,
-          clientPhone: phone,
-          clientEmail: email,
-          eventDate,
-          service,
-          message,
-          notificationEmails
-        })
-      }).catch(err => console.warn('Email trigger error:', err));
 
       renderDashboard();
       renderAppointmentsTable();
       closeModal('modal-apt');
       document.getElementById('form-add-apt').reset();
+
+      // Send automated status or booking email
+      const settings = StorageDB.getSettings();
+      const notificationEmails = (settings.notificationEmails && settings.notificationEmails.length > 0)
+        ? settings.notificationEmails.slice(0, 5)
+        : (settings.email ? [settings.email] : ['rivasatechnologies@gmail.com']);
+
+      if (email && email.includes('@')) {
+        showToast(`Appointment saved. Sending ${status} notification to ${name}...`, 'info');
+        fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'status_update',
+            status,
+            clientName: name,
+            clientPhone: phone,
+            clientEmail: email,
+            eventDate,
+            service,
+            message,
+            notificationEmails
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.success) {
+            showToast(`✅ Appointment saved & ${status} email delivered to ${email}!`, 'success');
+          } else if (data && data.warning) {
+            showToast(`⚠️ Appointment saved. Note: ${data.warning}`, 'warning');
+          }
+        })
+        .catch(err => {
+          console.warn('Email trigger error:', err);
+          showToast(`Appointment saved in database. (Email dispatch error)`, 'warning');
+        });
+      } else {
+        showToast(`✅ Appointment saved successfully!`, 'success');
+      }
     });
+
+    // Sleek Admin Toast Notification System
+    function showToast(message, type = 'info') {
+      let container = document.getElementById('admin-toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'admin-toast-container';
+        container.className = 'fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none max-w-sm';
+        document.body.appendChild(container);
+      }
+      const toast = document.createElement('div');
+      const bgStyles = type === 'success' 
+        ? 'bg-emerald-950/95 border-emerald-500/50 text-emerald-100 shadow-emerald-950/50'
+        : type === 'error'
+        ? 'bg-rose-950/95 border-rose-500/50 text-rose-100 shadow-rose-950/50'
+        : type === 'warning'
+        ? 'bg-amber-950/95 border-amber-500/50 text-amber-100 shadow-amber-950/50'
+        : 'bg-zinc-900/95 border-gold/50 text-white shadow-black/60';
+
+      toast.className = `pointer-events-auto p-4 rounded-xl border shadow-2xl backdrop-blur text-xs flex items-center gap-3 transition-all duration-300 transform translate-y-2 opacity-0 ${bgStyles}`;
+      toast.innerHTML = `<span class="flex-1 font-medium leading-relaxed">${message}</span><button class="opacity-60 hover:opacity-100 font-bold ml-2 text-base leading-none" onclick="this.parentElement.remove()">&times;</button>`;
+      
+      container.appendChild(toast);
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 5500);
+    }
 
     // Check auth on load
     checkAuth();
   </script>
+
+  <!-- Toast Notification Container -->
+  <div id="admin-toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none max-w-sm"></div>
 </body>
 </html>

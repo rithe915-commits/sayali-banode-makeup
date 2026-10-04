@@ -24,8 +24,6 @@ const DEFAULT_SETTINGS = {
   facebook: "https://facebook.com",
   adminPassword: "admin",
   emailServiceKey: "",
-  supabaseUrl: "",
-  supabaseAnonKey: "",
   experienceYears: "5+",
   happyBrides: "500+"
 };
@@ -59,12 +57,28 @@ const DEFAULT_APPOINTMENTS = [];
 
 let supabaseClient = null;
 
+function getSupabaseConfig() {
+  let url = (typeof window !== 'undefined' && window.__ENV__ && window.__ENV__.SUPABASE_URL) || '';
+  let key = (typeof window !== 'undefined' && window.__ENV__ && window.__ENV__.SUPABASE_ANON_KEY) || '';
+
+  if (!url || !key) {
+    try {
+      const cached = JSON.parse(localStorage.getItem('sba_env_config') || '{}');
+      if (cached.supabaseUrl && cached.supabaseAnonKey) {
+        url = cached.supabaseUrl;
+        key = cached.supabaseAnonKey;
+      }
+    } catch(e) {}
+  }
+  return { url: (url || '').trim(), key: (key || '').trim() };
+}
+
 function getSupabase() {
   if (supabaseClient) return supabaseClient;
-  const settings = StorageDB.getSettings();
-  if (settings.supabaseUrl && settings.supabaseAnonKey && typeof window !== 'undefined' && window.supabase) {
+  const cfg = getSupabaseConfig();
+  if (cfg.url && cfg.key && typeof window !== 'undefined' && window.supabase) {
     try {
-      supabaseClient = window.supabase.createClient(settings.supabaseUrl, settings.supabaseAnonKey);
+      supabaseClient = window.supabase.createClient(cfg.url, cfg.key);
     } catch (e) {
       console.warn("Supabase init error:", e);
     }
@@ -132,8 +146,39 @@ const StorageDB = {
       this.set(DB_KEYS.BLOCKED_DATES, blocked);
     }
     
+    // Check if Supabase env vars can be fetched via /api/config runtime endpoint
+    if (typeof window !== 'undefined' && (!window.__ENV__ || !window.__ENV__.SUPABASE_URL)) {
+      fetch('/api/config')
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data && data.supabaseUrl && data.supabaseAnonKey) {
+            window.__ENV__ = window.__ENV__ || {};
+            window.__ENV__.SUPABASE_URL = data.supabaseUrl;
+            window.__ENV__.SUPABASE_ANON_KEY = data.supabaseAnonKey;
+            try { localStorage.setItem('sba_env_config', JSON.stringify(data)); } catch(e) {}
+            if (!supabaseClient && window.supabase) {
+              supabaseClient = window.supabase.createClient(data.supabaseUrl, data.supabaseAnonKey);
+              this.syncFromSupabase();
+              if (typeof window.onSupabaseReady === 'function') {
+                window.onSupabaseReady();
+              }
+            }
+          }
+        })
+        .catch(() => {});
+    }
+
     // Attempt background sync from Supabase if configured
     this.syncFromSupabase();
+  },
+
+  isSupabaseConfigured() {
+    const cfg = getSupabaseConfig();
+    return !!(cfg.url && cfg.key);
+  },
+
+  getSupabaseConfig() {
+    return getSupabaseConfig();
   },
 
   async syncFromSupabase() {

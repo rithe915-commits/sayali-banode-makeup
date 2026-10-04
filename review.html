@@ -138,8 +138,13 @@
     </div>
   </div>
 
-  <!-- Shared DB Script -->
-  
+  <!-- Runtime Environment & Shared DB Script -->
+  <script src="/env.js"></script>
+  <script>
+    if (typeof window.__ENV__ === 'undefined') {
+      document.write('<script src="../env.js"><\/script>');
+    }
+  </script>
   <script src="/db.js"></script>
   <script>
     if (typeof StorageDB === 'undefined') {

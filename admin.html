@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | Sayali Banode Makeup Artist</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- QRCode.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            playfair: ['Playfair Display', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            gold: {
+              DEFAULT: '#D4AF37',
+              light: '#E8D5A1',
+              dark: '#B38F24'
+            },
+            charcoal: '#141416'
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    .gradient-text {
+      background: linear-gradient(135deg, #D4AF37 0%, #E8D5A1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+    }
+    .dark .glass {
+      background: rgba(20, 20, 22, 0.95);
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 font-sans antialiased min-h-screen">
+
+  <!-- ==================== 1. LOGIN MODAL / SCREEN ==================== -->
+  <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/95 p-4 backdrop-blur-xl">
+    <div class="w-full max-w-md bg-zinc-900 border border-gold/30 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+      <div class="absolute -top-12 -right-12 w-36 h-36 bg-gold/10 rounded-full blur-2xl"></div>
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gold/10 border border-gold/40 flex items-center justify-center text-3xl">
+          👑
+        </div>
+        <h2 class="text-3xl font-playfair font-bold gradient-text">Sayali Banode</h2>
+        <p class="text-zinc-400 text-sm mt-1">Management Portal &amp; CRM</p>
+      </div>
+
+      <form id="login-form" class="space-y-5">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Admin Password</label>
+          <input type="password" id="login-password" required placeholder="Enter password (default: admin)" class="w-full px-4 py-3.5 rounded-xl bg-zinc-800/80 border border-zinc-700 text-white placeholder-zinc-500 focus:border-gold focus:ring-1 focus:ring-gold outline-none transition" />
+          <p id="login-error" class="text-xs text-rose-400 mt-2 hidden">Incorrect password. Please try again.</p>
+        </div>
+
+        <button type="submit" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold py-3.5 rounded-xl shadow-lg transition duration-200">
+          Unlock Dashboard
+        </button>
+
+        <div class="text-center pt-2">
+          <a href="index.html" class="text-xs text-zinc-500 hover:text-gold transition">← Back to Live Website</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== 2. MAIN ADMIN APP INTERFACE ==================== -->
+  <div id="admin-app" class="hidden flex flex-col min-h-screen">
+    
+    <!-- Top Header -->
+    <header class="border-b border-zinc-800 bg-zinc-900/60 backdrop-blur-lg sticky top-0 z-30">
+      <div class="container mx-auto px-4 md:px-8 h-18 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gold/20 flex items-center justify-center text-xl font-bold text-gold">👑</div>
+          <div>
+            <h1 class="font-playfair font-bold text-lg gradient-text">Sayali Banode</h1>
+            <span class="text-[11px] text-zinc-400 tracking-wider uppercase font-medium">Business Admin Suite</span>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <a href="index.html" target="_blank" class="hidden sm:inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg border border-zinc-700 hover:border-gold text-xs text-zinc-300 hover:text-white transition">
+            <span>Live Site</span>
+            <span>↗</span>
+          </a>
+          <button id="btn-logout" class="px-3.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-rose-950/80 hover:text-rose-300 text-xs text-zinc-400 font-medium transition">
+            Log Out
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace with Sidebar Tabs -->
+    <div class="flex-1 flex flex-col md:flex-row">
+      <!-- Navigation Sidebar -->
+      <aside class="w-full md:w-64 bg-zinc-900/40 border-r border-zinc-800 p-4 space-y-1">
+        <button data-tab="tab-dashboard" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition bg-gold text-black shadow-sm">
+          <span>📊</span>
+          <span>Dashboard</span>
+        </button>
+        <button data-tab="tab-appointments" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition text-zinc-400 hover:text-white hover:bg-zinc-800/60">
+          <span>📅</span>
+          <span>Appointments</span>
+          <span id="badge-pending" class="ml-auto text-xs px-2 py-0.5 rounded-full bg-gold/20 text-gold font-bold">1</span>
+        </button>
+        <button data-tab="tab-portfolio" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition text-zinc-400 hover:text-white hover:bg-zinc-800/60">
+          <span>🖼️</span>
+          <span>Portfolio &amp; Photos</span>
+        </button>
+        <button data-tab="tab-services" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition text-zinc-400 hover:text-white hover:bg-zinc-800/60">
+          <span>💼</span>
+          <span>Services &amp; Pricing</span>
+        </button>
+        <button data-tab="tab-reviews" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition text-zinc-400 hover:text-white hover:bg-zinc-800/60">
+          <span>⭐</span>
+          <span>Reviews &amp; Ratings</span>
+        </button>
+        <button data-tab="tab-qr" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition text-zinc-400 hover:text-white hover:bg-zinc-800/60">
+          <span>📲</span>
+          <span>Review QR &amp; Link</span>
+        </button>
+        <button data-tab="tab-calendar" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition text-zinc-400 hover:text-white hover:bg-zinc-800/60">
+          <span>🚫</span>
+          <span>Blocked Dates</span>
+        </button>
+        <button data-tab="tab-settings" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition text-zinc-400 hover:text-white hover:bg-zinc-800/60">
+          <span>⚙️</span>
+          <span>Website &amp; Emails</span>
+        </button>
+      </aside>
+
+      <!-- Tab Content Area -->
+      <main class="flex-1 p-4 md:p-8 overflow-y-auto max-w-7xl">
+        
+        <!-- ==================== TAB: DASHBOARD ==================== -->
+        <div id="tab-dashboard" class="tab-pane space-y-8">
+          <div>
+            <h2 class="text-3xl font-playfair font-bold">Welcome back, Sayali 👋</h2>
+            <p class="text-zinc-400 text-sm mt-1">Here is a summary of your makeup bookings and client engagements.</p>
+          </div>
+
+          <!-- Quick Metrics Cards -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div class="p-6 rounded-2xl bg-zinc-900 border border-zinc-800 shadow-md">
+              <span class="text-xs font-semibold uppercase tracking-wider text-zinc-500">Total Bookings</span>
+              <div class="text-3xl font-bold font-playfair text-white mt-2" id="metric-total">2</div>
+              <span class="text-xs text-zinc-400 mt-1 block">All-time appointments</span>
+            </div>
+            <div class="p-6 rounded-2xl bg-zinc-900 border border-amber-500/20 shadow-md">
+              <span class="text-xs font-semibold uppercase tracking-wider text-amber-400">Pending Review</span>
+              <div class="text-3xl font-bold font-playfair text-amber-300 mt-2" id="metric-pending">1</div>
+              <span class="text-xs text-zinc-400 mt-1 block">Requires confirmation</span>
+            </div>
+            <div class="p-6 rounded-2xl bg-zinc-900 border border-emerald-500/20 shadow-md">
+              <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">Confirmed</span>
+              <div class="text-3xl font-bold font-playfair text-emerald-300 mt-2" id="metric-confirmed">1</div>
+              <span class="text-xs text-zinc-400 mt-1 block">Scheduled on calendar</span>
+            </div>
+            <div class="p-6 rounded-2xl bg-zinc-900 border border-gold/30 shadow-md">
+              <span class="text-xs font-semibold uppercase tracking-wider text-gold">Reviews Average</span>
+              <div class="text-3xl font-bold font-playfair text-gold mt-2" id="metric-rating">5.0 ★</div>
+              <span class="text-xs text-zinc-400 mt-1 block">From 4 happy brides</span>
+            </div>
+          </div>
+
+          <!-- Quick Actions & Recent Bookings -->
+          <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Left 2 Cols: Recent Bookings -->
+            <div class="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-playfair font-bold text-lg">Upcoming Appointments</h3>
+                <button onclick="switchTab('tab-appointments')" class="text-xs text-gold hover:underline">View All &rarr;</button>
+              </div>
+              <div id="recent-bookings-list" class="space-y-3">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- Right Col: Quick Share & Tools -->
+            <div class="space-y-6">
+              <div class="bg-gradient-to-br from-zinc-900 to-zinc-900/90 border border-gold/30 rounded-2xl p-6 text-center">
+                <div class="text-3xl mb-2">📲</div>
+                <h4 class="font-playfair font-bold text-lg">Collect Reviews on WhatsApp</h4>
+                <p class="text-xs text-zinc-400 mt-1 mb-4">Share your review link with brides right after finishing their makeover.</p>
+                <button onclick="copyReviewLink()" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold py-2.5 rounded-xl text-xs transition">
+                  📋 Copy Review Link
+                </button>
+              </div>
+
+              <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+                <h4 class="font-playfair font-bold text-base mb-2">⚡ Quick Links</h4>
+                <div class="space-y-2 text-xs">
+                  <a href="index.html#booking" target="_blank" class="block p-2.5 rounded-lg bg-zinc-800/70 hover:bg-zinc-800 text-zinc-300">🔗 Open Booking Form</a>
+                  <a href="review.html" target="_blank" class="block p-2.5 rounded-lg bg-zinc-800/70 hover:bg-zinc-800 text-zinc-300">⭐ Open Client Review Page</a>
+                  <button onclick="exportAppointmentsCSV()" class="w-full text-left p-2.5 rounded-lg bg-zinc-800/70 hover:bg-zinc-800 text-zinc-300">📥 Export Appointments (CSV)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== TAB: APPOINTMENTS ==================== -->
+        <div id="tab-appointments" class="tab-pane hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-playfair font-bold">Appointments &amp; Inquiries</h2>
+              <p class="text-zinc-400 text-xs mt-1">Manage, confirm, and communicate with prospective brides.</p>
+            </div>
+            <div class="flex items-center space-x-3">
+              <button onclick="exportAppointmentsCSV()" class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-300 transition">
+                📥 Export CSV
+              </button>
+              <button onclick="openNewAptModal()" class="px-4 py-2 rounded-xl bg-gold hover:bg-gold-dark text-xs font-semibold text-black transition">
+                + Add Appointment
+              </button>
+            </div>
+          </div>
+
+          <!-- Filters & Search Bar -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input type="text" id="apt-search" placeholder="Search by name, phone, service..." oninput="renderAppointmentsTable()" class="flex-1 px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white placeholder-zinc-500 focus:border-gold outline-none" />
+            <select id="apt-filter-status" onchange="renderAppointmentsTable()" class="px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-zinc-300 focus:border-gold outline-none">
+              <option value="All">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+
+          <!-- Table Container -->
+          <div class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-xl">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm">
+                <thead class="bg-zinc-950/60 text-xs uppercase tracking-wider text-zinc-400 border-b border-zinc-800">
+                  <tr>
+                    <th class="py-3.5 px-4">Client</th>
+                    <th class="py-3.5 px-4">Service</th>
+                    <th class="py-3.5 px-4">Event Date</th>
+                    <th class="py-3.5 px-4">Status</th>
+                    <th class="py-3.5 px-4">Message / Venue</th>
+                    <th class="py-3.5 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="appointments-tbody" class="divide-y divide-zinc-800">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== TAB: PORTFOLIO & PHOTOS ==================== -->
+        <div id="tab-portfolio" class="tab-pane hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-2xl font-playfair font-bold">Portfolio &amp; Gallery Manager</h2>
+              <p class="text-zinc-400 text-xs mt-1">Add, categorize, and organize your bridal makeover showcase.</p>
+            </div>
+            <button onclick="openAddPhotoModal()" class="px-4 py-2.5 rounded-xl bg-gold hover:bg-gold-dark text-xs font-semibold text-black transition">
+              + Add New Photo
+            </button>
+          </div>
+
+          <div id="admin-portfolio-grid" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- ==================== TAB: SERVICES & PRICING ==================== -->
+        <div id="tab-services" class="tab-pane hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-2xl font-playfair font-bold">Services &amp; Packages</h2>
+              <p class="text-zinc-400 text-xs mt-1">Configure your beauty offerings, pricing, and descriptions.</p>
+            </div>
+            <button onclick="openAddServiceModal()" class="px-4 py-2.5 rounded-xl bg-gold hover:bg-gold-dark text-xs font-semibold text-black transition">
+              + Add Service
+            </button>
+          </div>
+
+          <div id="admin-services-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- ==================== TAB: REVIEWS & TESTIMONIALS ==================== -->
+        <div id="tab-reviews" class="tab-pane hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-2xl font-playfair font-bold">Client Reviews &amp; Testimonials</h2>
+              <p class="text-zinc-400 text-xs mt-1">Manage reviews displayed on your website or approve new submissions.</p>
+            </div>
+            <button onclick="openAddReviewModal()" class="px-4 py-2.5 rounded-xl bg-gold hover:bg-gold-dark text-xs font-semibold text-black transition">
+              + Add Review
+            </button>
+          </div>
+
+          <div id="admin-reviews-list" class="space-y-4">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- ==================== TAB: REVIEW QR & SHARE ==================== -->
+        <div id="tab-qr" class="tab-pane hidden space-y-8">
+          <div class="max-w-2xl mx-auto text-center space-y-6">
+            <div>
+              <h2 class="text-3xl font-playfair font-bold">Share Review Link &amp; QR Code</h2>
+              <p class="text-zinc-400 text-sm mt-1">
+                Show this QR code on your phone to clients at the salon or wedding venue, or send them the link on WhatsApp to collect 5-star reviews!
+              </p>
+            </div>
+
+            <!-- QR Display Card -->
+            <div class="p-8 bg-zinc-900 border-2 border-gold/40 rounded-3xl inline-block shadow-2xl">
+              <div id="qrcode" class="p-4 bg-white rounded-2xl mx-auto flex items-center justify-center"></div>
+              <h3 class="font-playfair font-bold text-xl mt-6">Scan to Review Sayali Banode</h3>
+              <p class="text-xs text-zinc-400 mt-1">Takes less than 30 seconds</p>
+            </div>
+
+            <div class="space-y-3 max-w-md mx-auto">
+              <label class="block text-xs uppercase tracking-wider text-zinc-400">Direct Review URL</label>
+              <div class="flex items-center space-x-2">
+                <input type="text" id="review-url-input" readonly class="flex-1 px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-zinc-300 font-mono outline-none" />
+                <button onclick="copyReviewLink()" class="px-4 py-2.5 rounded-xl bg-gold hover:bg-gold-dark text-xs font-semibold text-black transition">
+                  Copy
+                </button>
+              </div>
+            </div>
+
+            <div class="pt-4 flex justify-center space-x-4">
+              <a href="review.html" target="_blank" class="px-5 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-medium text-white transition">
+                Test Review Page ↗
+              </a>
+              <button onclick="shareOnWhatsApp()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold text-white transition">
+                Share on WhatsApp 💬
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== TAB: BLOCKED DATES ==================== -->
+        <div id="tab-calendar" class="tab-pane hidden space-y-6">
+          <div>
+            <h2 class="text-2xl font-playfair font-bold">Blocked &amp; Booked Dates</h2>
+            <p class="text-zinc-400 text-xs mt-1">Dates when you are booked for weddings or unavailable. Clients selecting these dates on the booking form will receive a warning.</p>
+          </div>
+
+          <div class="max-w-xl bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-4">
+            <div class="flex items-center space-x-3">
+              <input type="date" id="new-block-date" class="flex-1 px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white text-sm outline-none focus:border-gold" />
+              <button onclick="addBlockedDate()" class="px-4 py-2.5 rounded-xl bg-gold hover:bg-gold-dark text-black text-xs font-semibold transition">
+                + Block Date
+              </button>
+            </div>
+
+            <div class="pt-4 border-t border-zinc-800">
+              <h4 class="text-xs uppercase tracking-wider text-zinc-400 mb-3 font-semibold">Currently Blocked Dates</h4>
+              <div id="blocked-dates-list" class="flex flex-wrap gap-2">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== TAB: SETTINGS & EMAIL ==================== -->
+        <div id="tab-settings" class="tab-pane hidden space-y-8 max-w-3xl">
+          <div>
+            <h2 class="text-2xl font-playfair font-bold">Website &amp; Email Settings</h2>
+            <p class="text-zinc-400 text-xs mt-1">Configure contact credentials, automatic email notifications, and password.</p>
+          </div>
+
+          <form id="settings-form" class="space-y-6 bg-zinc-900 border border-zinc-800 rounded-2xl p-6 md:p-8">
+            <!-- Business Info -->
+            <div class="border-b border-zinc-800 pb-6">
+              <h3 class="text-base font-semibold text-gold mb-4">👑 Business &amp; Contact Details</h3>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-zinc-400 mb-1">Artist Name</label>
+                  <input type="text" id="setting-artist-name" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-zinc-400 mb-1">Phone Number</label>
+                  <input type="text" id="setting-phone" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-zinc-400 mb-1">WhatsApp Number (e.g. 917030477747)</label>
+                  <input type="text" id="setting-whatsapp" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-zinc-400 mb-1">Email Address</label>
+                  <input type="email" id="setting-email" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-medium text-zinc-400 mb-1">Studio / City Location</label>
+                  <input type="text" id="setting-location" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Social Links -->
+            <div class="border-b border-zinc-800 pb-6">
+              <h3 class="text-base font-semibold text-gold mb-4">🌐 Social Profiles</h3>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-zinc-400 mb-1">Instagram Profile URL</label>
+                  <input type="url" id="setting-instagram" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-zinc-400 mb-1">Facebook Profile URL</label>
+                  <input type="url" id="setting-facebook" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Email Notification Integration -->
+            <div class="border-b border-zinc-800 pb-6">
+              <h3 class="text-base font-semibold text-gold mb-2">📧 Automated Email Notification Service</h3>
+              <p class="text-xs text-zinc-400 mb-4">
+                When a customer books, an instant email is delivered to Sayali and a confirmation is emailed to the client. You can enter your free Web3Forms Access Key below (or leave empty to receive leads in the Admin + WhatsApp).
+              </p>
+              <div>
+                <label class="block text-xs font-medium text-zinc-400 mb-1">Web3Forms / Email Service Access Key (Optional)</label>
+                <input type="text" id="setting-email-key" placeholder="e.g. 12345678-abcd-efgh-ijkl-1234567890ab" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white font-mono focus:border-gold outline-none" />
+                <span class="text-[11px] text-zinc-500 mt-1 block">Free at <a href="https://web3forms.com" target="_blank" class="text-gold underline">web3forms.com</a>. Sends instant emails without backend servers.</span>
+              </div>
+            </div>
+
+            <!-- Password Security -->
+            <div>
+              <h3 class="text-base font-semibold text-gold mb-4">🔒 Admin Password</h3>
+              <div class="max-w-xs">
+                <label class="block text-xs font-medium text-zinc-400 mb-1">Change Admin Password</label>
+                <input type="text" id="setting-password" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+              </div>
+            </div>
+
+            <button type="submit" class="bg-gold hover:bg-gold-dark text-black font-semibold px-6 py-3 rounded-xl text-sm transition">
+              💾 Save Settings
+            </button>
+          </form>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Add Photo Modal -->
+  <div id="modal-photo" class="fixed inset-0 z-50 bg-black/80 hidden items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 md:p-8 max-w-md w-full relative">
+      <button onclick="closeModal('modal-photo')" class="absolute top-5 right-5 text-zinc-400 hover:text-white text-xl">✕</button>
+      <h3 class="font-playfair font-bold text-xl mb-4">Add Portfolio Photo</h3>
+      <form id="form-add-photo" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Look Title *</label>
+          <input type="text" id="photo-title" required placeholder="e.g. Royal Marathi Bridal" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Category *</label>
+          <select id="photo-category" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none">
+            <option value="bridal">Bridal</option>
+            <option value="reception">Reception</option>
+            <option value="party">Party</option>
+            <option value="editorial">Editorial</option>
+            <option value="glam">Glam</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Image URL (or upload below)</label>
+          <input type="url" id="photo-url" placeholder="https://images.unsplash.com/..." class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Or Upload from Computer</label>
+          <input type="file" id="photo-file" accept="image/*" class="w-full text-xs text-zinc-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-zinc-800 file:text-gold hover:file:bg-zinc-700" />
+        </div>
+        <button type="submit" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold py-3 rounded-xl text-sm transition mt-4">
+          Save Photo to Portfolio
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Service Modal -->
+  <div id="modal-service" class="fixed inset-0 z-50 bg-black/80 hidden items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 md:p-8 max-w-md w-full relative">
+      <button onclick="closeModal('modal-service')" class="absolute top-5 right-5 text-zinc-400 hover:text-white text-xl">✕</button>
+      <h3 class="font-playfair font-bold text-xl mb-4">Add / Edit Service</h3>
+      <form id="form-add-service" class="space-y-4">
+        <div class="grid grid-cols-4 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-zinc-400 mb-1">Icon/Emoji</label>
+            <input type="text" id="service-icon" value="✨" class="w-full text-center px-3 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-lg text-white outline-none" />
+          </div>
+          <div class="col-span-3">
+            <label class="block text-xs font-semibold text-zinc-400 mb-1">Service Title *</label>
+            <input type="text" id="service-title" required placeholder="e.g. Sangeet & Mehendi Look" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Price / Fee</label>
+          <input type="text" id="service-price" placeholder="e.g. ₹15,000" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Description</label>
+          <textarea id="service-desc" rows="3" placeholder="Explain what is included..." class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none"></textarea>
+        </div>
+        <button type="submit" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold py-3 rounded-xl text-sm transition mt-4">
+          Save Service
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Review Modal -->
+  <div id="modal-review" class="fixed inset-0 z-50 bg-black/80 hidden items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 md:p-8 max-w-md w-full relative">
+      <button onclick="closeModal('modal-review')" class="absolute top-5 right-5 text-zinc-400 hover:text-white text-xl">✕</button>
+      <h3 class="font-playfair font-bold text-xl mb-4">Add Client Review</h3>
+      <form id="form-add-review" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Client Name *</label>
+          <input type="text" id="review-client-name" required placeholder="e.g. Mansi Deshmukh" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-zinc-400 mb-1">Rating (Stars)</label>
+            <select id="review-rating" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none">
+              <option value="5">5 Stars ★★★★★</option>
+              <option value="4">4 Stars ★★★★☆</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-zinc-400 mb-1">Emoji / Avatar</label>
+            <input type="text" id="review-emoji" value="👰" class="w-full text-center px-3 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Review Text *</label>
+          <textarea id="review-text" rows="3" required placeholder="Write the feedback received from the client..." class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none"></textarea>
+        </div>
+        <button type="submit" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold py-3 rounded-xl text-sm transition mt-4">
+          Publish Review
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Appointment Modal -->
+  <div id="modal-apt" class="fixed inset-0 z-50 bg-black/80 hidden items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 md:p-8 max-w-lg w-full relative">
+      <button onclick="closeModal('modal-apt')" class="absolute top-5 right-5 text-zinc-400 hover:text-white text-xl">✕</button>
+      <h3 class="font-playfair font-bold text-xl mb-4">Manual Appointment Entry</h3>
+      <form id="form-add-apt" class="space-y-4">
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-zinc-400 mb-1">Client Name *</label>
+            <input type="text" id="apt-name" required placeholder="Full Name" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-zinc-400 mb-1">Phone Number *</label>
+            <input type="tel" id="apt-phone" required placeholder="+91..." class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+          </div>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-zinc-400 mb-1">Email Address</label>
+            <input type="email" id="apt-email" placeholder="client@email.com" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-zinc-400 mb-1">Event Date *</label>
+            <input type="date" id="apt-date" required class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Service Required *</label>
+          <input type="text" id="apt-service" required placeholder="e.g. Bridal Makeup" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Notes / Requirements</label>
+          <textarea id="apt-message" rows="2" placeholder="Venue, timings, advance payment, etc." class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-sm text-white focus:border-gold outline-none"></textarea>
+        </div>
+        <button type="submit" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold py-3 rounded-xl text-sm transition mt-4">
+          Save Appointment
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Shared DB Script -->
+  <script src="db.js"></script>
+
+  <!-- Admin Controller Logic -->
+  <script>
+    // Authentication Check
+    const loginScreen = document.getElementById('login-screen');
+    const adminApp = document.getElementById('admin-app');
+    const loginForm = document.getElementById('login-form');
+    const loginPass = document.getElementById('login-password');
+    const loginError = document.getElementById('login-error');
+    const btnLogout = document.getElementById('btn-logout');
+
+    function checkAuth() {
+      const isAuth = sessionStorage.getItem(DB_KEYS.AUTH);
+      if (isAuth === 'true') {
+        loginScreen.classList.add('hidden');
+        adminApp.classList.remove('hidden');
+        initAdminData();
+      } else {
+        loginScreen.classList.remove('hidden');
+        adminApp.classList.add('hidden');
+      }
+    }
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const settings = StorageDB.getSettings();
+      const correctPass = settings.adminPassword || 'admin';
+      if (loginPass.value === correctPass) {
+        sessionStorage.setItem(DB_KEYS.AUTH, 'true');
+        loginError.classList.add('hidden');
+        loginPass.value = '';
+        checkAuth();
+      } else {
+        loginError.classList.remove('hidden');
+      }
+    });
+
+    btnLogout.addEventListener('click', () => {
+      sessionStorage.removeItem(DB_KEYS.AUTH);
+      checkAuth();
+    });
+
+    // Tab Switching
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+
+    function switchTab(tabId) {
+      tabPanes.forEach(pane => {
+        pane.classList.toggle('hidden', pane.id !== tabId);
+      });
+      tabBtns.forEach(btn => {
+        const active = btn.getAttribute('data-tab') === tabId;
+        if (active) {
+          btn.classList.add('bg-gold', 'text-black', 'shadow-sm');
+          btn.classList.remove('text-zinc-400', 'hover:text-white', 'hover:bg-zinc-800/60');
+        } else {
+          btn.classList.remove('bg-gold', 'text-black', 'shadow-sm');
+          btn.classList.add('text-zinc-400', 'hover:text-white', 'hover:bg-zinc-800/60');
+        }
+      });
+      if (tabId === 'tab-qr') {
+        generateQRCode();
+      }
+    }
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        switchTab(btn.getAttribute('data-tab'));
+      });
+    });
+
+    // Initialize Admin Data
+    function initAdminData() {
+      renderDashboard();
+      renderAppointmentsTable();
+      renderPortfolioAdmin();
+      renderServicesAdmin();
+      renderReviewsAdmin();
+      renderBlockedDatesAdmin();
+      loadSettingsForm();
+      generateQRCode();
+    }
+
+    // 1. Dashboard Metrics
+    function renderDashboard() {
+      const apts = StorageDB.getAppointments();
+      const reviews = StorageDB.getTestimonials();
+
+      const total = apts.length;
+      const pending = apts.filter(a => a.status === 'Pending').length;
+      const confirmed = apts.filter(a => a.status === 'Confirmed').length;
+
+      document.getElementById('metric-total').textContent = total;
+      document.getElementById('metric-pending').textContent = pending;
+      document.getElementById('metric-confirmed').textContent = confirmed;
+      document.getElementById('badge-pending').textContent = pending;
+
+      // Recent Bookings
+      const recentList = document.getElementById('recent-bookings-list');
+      if (apts.length === 0) {
+        recentList.innerHTML = '<p class="text-zinc-500 text-xs py-4">No appointments recorded yet.</p>';
+      } else {
+        recentList.innerHTML = apts.slice(0, 4).map(a => `
+          <div class="flex items-center justify-between p-3.5 rounded-xl bg-zinc-800/50 border border-zinc-800">
+            <div>
+              <h5 class="font-semibold text-white text-sm">${a.name}</h5>
+              <p class="text-xs text-zinc-400">${a.service} • 📅 ${a.eventDate}</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs px-2.5 py-1 rounded-full font-medium ${getStatusBadge(a.status)}">${a.status}</span>
+              <button onclick="openWhatsAppChat('${a.phone}', '${a.name}', '${a.service}', '${a.eventDate}')" title="WhatsApp client" class="p-1.5 rounded-lg bg-emerald-950 text-emerald-400 hover:bg-emerald-900 text-xs">💬</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function getStatusBadge(status) {
+      switch(status) {
+        case 'Confirmed': return 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+        case 'Pending': return 'bg-amber-500/20 text-amber-300 border border-amber-500/30';
+        case 'Completed': return 'bg-blue-500/20 text-blue-300 border border-blue-500/30';
+        case 'Cancelled': return 'bg-rose-500/20 text-rose-400 border border-rose-500/30';
+        default: return 'bg-zinc-800 text-zinc-300';
+      }
+    }
+
+    // 2. Appointments Table & Filtering
+    function renderAppointmentsTable() {
+      const apts = StorageDB.getAppointments();
+      const search = document.getElementById('apt-search').value.toLowerCase();
+      const statusFilter = document.getElementById('apt-filter-status').value;
+
+      const filtered = apts.filter(a => {
+        const matchSearch = a.name.toLowerCase().includes(search) || a.phone.includes(search) || a.service.toLowerCase().includes(search);
+        const matchStatus = statusFilter === 'All' || a.status === statusFilter;
+        return matchSearch && matchStatus;
+      });
+
+      const tbody = document.getElementById('appointments-tbody');
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-zinc-500 text-xs">No matching appointments found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(a => `
+        <tr class="hover:bg-zinc-800/40 transition">
+          <td class="py-4 px-4">
+            <div class="font-semibold text-white">${a.name}</div>
+            <div class="text-xs text-zinc-400 flex items-center space-x-2 mt-0.5">
+              <span>${a.phone}</span>
+              ${a.email ? `<span>• ${a.email}</span>` : ''}
+            </div>
+          </td>
+          <td class="py-4 px-4 text-zinc-300 font-medium">${a.service}</td>
+          <td class="py-4 px-4 text-zinc-300">${a.eventDate}</td>
+          <td class="py-4 px-4">
+            <select onchange="updateAppointmentStatus('${a.id}', this.value)" class="text-xs px-2.5 py-1 rounded-full font-medium bg-zinc-800 border border-zinc-700 text-white outline-none cursor-pointer">
+              <option value="Pending" ${a.status === 'Pending' ? 'selected' : ''}>Pending</option>
+              <option value="Confirmed" ${a.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+              <option value="Completed" ${a.status === 'Completed' ? 'selected' : ''}>Completed</option>
+              <option value="Cancelled" ${a.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+            </select>
+          </td>
+          <td class="py-4 px-4 text-xs text-zinc-400 max-w-xs truncate" title="${a.message || ''}">
+            ${a.message || '<span class="text-zinc-600">No message</span>'}
+          </td>
+          <td class="py-4 px-4 text-right">
+            <div class="flex items-center justify-end space-x-2">
+              <button onclick="openWhatsAppChat('${a.phone}', '${a.name}', '${a.service}', '${a.eventDate}')" title="Message on WhatsApp" class="p-2 rounded-lg bg-emerald-950 hover:bg-emerald-900 text-emerald-400 transition text-xs">
+                💬
+              </button>
+              <a href="tel:${a.phone}" title="Call" class="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition text-xs">
+                📞
+              </a>
+              <button onclick="deleteAppointment('${a.id}')" title="Delete" class="p-2 rounded-lg bg-rose-950/60 hover:bg-rose-900 text-rose-400 transition text-xs">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function updateAppointmentStatus(id, newStatus) {
+      const apts = StorageDB.getAppointments();
+      const apt = apts.find(a => a.id === id);
+      if (apt) {
+        apt.status = newStatus;
+        StorageDB.saveAppointments(apts);
+        renderDashboard();
+      }
+    }
+
+    function deleteAppointment(id) {
+      if (confirm("Delete this appointment entry?")) {
+        let apts = StorageDB.getAppointments();
+        apts = apts.filter(a => a.id !== id);
+        StorageDB.saveAppointments(apts);
+        renderDashboard();
+        renderAppointmentsTable();
+      }
+    }
+
+    function openWhatsAppChat(phone, name, service, date) {
+      const cleanPhone = phone.replace(/[^0-9]/g, '');
+      const text = encodeURIComponent(`Hello ${name}! ✨ This is Sayali Banode Makeup Artist. I received your booking request for ${service} on ${date}. I would be delighted to work with you! Let me know if we can discuss the timings and requirements.`);
+      window.open(`https://wa.me/${cleanPhone}?text=${text}`, '_blank');
+    }
+
+    // Export CSV
+    function exportAppointmentsCSV() {
+      const apts = StorageDB.getAppointments();
+      let csv = "ID,Name,Phone,Email,EventDate,Service,Status,Message\n";
+      apts.forEach(a => {
+        csv += `"${a.id}","${a.name}","${a.phone}","${a.email || ''}","${a.eventDate}","${a.service}","${a.status}","${(a.message || '').replace(/"/g, '""')}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `sayali_banode_appointments_${new Date().toISOString().slice(0,10)}.csv`;
+      link.click();
+    }
+
+    // 3. Portfolio Admin
+    function renderPortfolioAdmin() {
+      const items = StorageDB.getPortfolio();
+      const grid = document.getElementById('admin-portfolio-grid');
+      grid.innerHTML = items.map(p => `
+        <div class="relative group rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 shadow-md">
+          <img src="${p.url}" alt="${p.title}" class="w-full h-48 object-cover" />
+          <div class="p-3">
+            <span class="text-[10px] uppercase font-bold text-gold tracking-wider">${p.category}</span>
+            <h4 class="font-semibold text-sm text-white truncate">${p.title}</h4>
+          </div>
+          <button onclick="deletePhoto('${p.id}')" class="absolute top-2 right-2 bg-rose-600/90 hover:bg-rose-600 text-white text-xs p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition shadow">
+            🗑️ Delete
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function deletePhoto(id) {
+      if (confirm("Remove this photo from portfolio?")) {
+        let items = StorageDB.getPortfolio();
+        items = items.filter(p => p.id !== id);
+        StorageDB.savePortfolio(items);
+        renderPortfolioAdmin();
+      }
+    }
+
+    // 4. Services Admin
+    function renderServicesAdmin() {
+      const services = StorageDB.getServices();
+      const grid = document.getElementById('admin-services-grid');
+      grid.innerHTML = services.map(s => `
+        <div class="p-5 rounded-2xl bg-zinc-900 border border-zinc-800 relative group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-3xl">${s.icon}</span>
+            <span class="text-gold font-bold text-sm">${s.price || ''}</span>
+          </div>
+          <h4 class="font-playfair font-bold text-lg text-white">${s.title}</h4>
+          <p class="text-xs text-zinc-400 mt-1 mb-4 leading-relaxed">${s.description}</p>
+          <button onclick="deleteService('${s.id}')" class="text-xs text-rose-400 hover:text-rose-300">
+            🗑️ Remove Service
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function deleteService(id) {
+      if (confirm("Delete this service offering?")) {
+        let services = StorageDB.getServices();
+        services = services.filter(s => s.id !== id);
+        StorageDB.saveServices(services);
+        renderServicesAdmin();
+      }
+    }
+
+    // 5. Reviews Admin
+    function renderReviewsAdmin() {
+      const reviews = StorageDB.getTestimonials();
+      const container = document.getElementById('admin-reviews-list');
+      container.innerHTML = reviews.map(r => `
+        <div class="p-5 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-start justify-between">
+          <div class="space-y-1">
+            <div class="flex items-center space-x-2">
+              <span class="text-lg">${r.emoji || '👰'}</span>
+              <h4 class="font-semibold text-white">${r.name}</h4>
+              <span class="text-xs text-gold">★★★★★ (${r.rating}★)</span>
+            </div>
+            <p class="text-xs text-zinc-300 italic">"${r.text}"</p>
+            ${r.date ? `<span class="text-[10px] text-zinc-500 block">Submitted: ${r.date}</span>` : ''}
+          </div>
+          <button onclick="deleteReview('${r.id}')" class="text-xs text-rose-400 hover:text-rose-300 p-2">
+            🗑️ Delete
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function deleteReview(id) {
+      if (confirm("Delete this review?")) {
+        let reviews = StorageDB.getTestimonials();
+        reviews = reviews.filter(r => r.id !== id);
+        StorageDB.saveTestimonials(reviews);
+        renderReviewsAdmin();
+        renderDashboard();
+      }
+    }
+
+    // 6. Blocked Dates Admin
+    function renderBlockedDatesAdmin() {
+      const dates = StorageDB.getBlockedDates();
+      const container = document.getElementById('blocked-dates-list');
+      if (dates.length === 0) {
+        container.innerHTML = '<span class="text-xs text-zinc-500">No blocked dates. All dates available.</span>';
+        return;
+      }
+      container.innerHTML = dates.map(d => `
+        <span class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-zinc-800 text-xs text-zinc-200 border border-zinc-700">
+          <span>📅 ${d}</span>
+          <button onclick="removeBlockedDate('${d}')" class="text-rose-400 hover:text-rose-300 font-bold ml-1">✕</button>
+        </span>
+      `).join('');
+    }
+
+    function addBlockedDate() {
+      const input = document.getElementById('new-block-date');
+      const val = input.value;
+      if (!val) return;
+      const dates = StorageDB.getBlockedDates();
+      if (!dates.includes(val)) {
+        dates.push(val);
+        StorageDB.saveBlockedDates(dates);
+        renderBlockedDatesAdmin();
+        input.value = '';
+      }
+    }
+
+    function removeBlockedDate(dateStr) {
+      let dates = StorageDB.getBlockedDates();
+      dates = dates.filter(d => d !== dateStr);
+      StorageDB.saveBlockedDates(dates);
+      renderBlockedDatesAdmin();
+    }
+
+    // 7. QR Code & Review Share
+    function generateQRCode() {
+      const qrContainer = document.getElementById('qrcode');
+      qrContainer.innerHTML = '';
+      // Current review URL
+      const currentOrigin = window.location.origin + window.location.pathname.replace('admin.html', '').replace('admin', '');
+      const reviewUrl = currentOrigin.endsWith('/') ? currentOrigin + 'review.html' : currentOrigin + '/review.html';
+      
+      document.getElementById('review-url-input').value = reviewUrl;
+
+      new QRCode(qrContainer, {
+        text: reviewUrl,
+        width: 180,
+        height: 180,
+        colorDark: "#141416",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+
+    function copyReviewLink() {
+      const input = document.getElementById('review-url-input');
+      navigator.clipboard.writeText(input.value).then(() => {
+        alert("Review link copied to clipboard! You can paste and send it directly on WhatsApp.");
+      });
+    }
+
+    function shareOnWhatsApp() {
+      const input = document.getElementById('review-url-input');
+      const text = encodeURIComponent(`Hi! It was such a pleasure doing your makeup. Could you please take 30 seconds to leave a quick 5-star review here? It means the world to me: ${input.value}`);
+      window.open(`https://wa.me/?text=${text}`, '_blank');
+    }
+
+    // 8. Settings Form
+    function loadSettingsForm() {
+      const s = StorageDB.getSettings();
+      document.getElementById('setting-artist-name').value = s.artistName || '';
+      document.getElementById('setting-phone').value = s.phone || '';
+      document.getElementById('setting-whatsapp').value = s.whatsapp || '';
+      document.getElementById('setting-email').value = s.email || '';
+      document.getElementById('setting-location').value = s.location || '';
+      document.getElementById('setting-instagram').value = s.instagram || '';
+      document.getElementById('setting-facebook').value = s.facebook || '';
+      document.getElementById('setting-email-key').value = s.emailServiceKey || '';
+      document.getElementById('setting-password').value = s.adminPassword || 'admin';
+    }
+
+    document.getElementById('settings-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const current = StorageDB.getSettings();
+      const updated = {
+        ...current,
+        artistName: document.getElementById('setting-artist-name').value,
+        phone: document.getElementById('setting-phone').value,
+        whatsapp: document.getElementById('setting-whatsapp').value,
+        email: document.getElementById('setting-email').value,
+        location: document.getElementById('setting-location').value,
+        instagram: document.getElementById('setting-instagram').value,
+        facebook: document.getElementById('setting-facebook').value,
+        emailServiceKey: document.getElementById('setting-email-key').value,
+        adminPassword: document.getElementById('setting-password').value
+      };
+      StorageDB.saveSettings(updated);
+      alert("Settings saved successfully! Website and admin are updated.");
+    });
+
+    // Modal Helpers
+    function openModal(id) {
+      const m = document.getElementById(id);
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+    function closeModal(id) {
+      const m = document.getElementById(id);
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    function openAddPhotoModal() { openModal('modal-photo'); }
+    function openAddServiceModal() { openModal('modal-service'); }
+    function openAddReviewModal() { openModal('modal-review'); }
+    function openNewAptModal() { openModal('modal-apt'); }
+
+    // Handlers for Add Modals
+    document.getElementById('form-add-photo').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('photo-title').value;
+      const category = document.getElementById('photo-category').value;
+      const urlInput = document.getElementById('photo-url').value;
+      const fileInput = document.getElementById('photo-file');
+
+      function savePhoto(finalUrl) {
+        const list = StorageDB.getPortfolio();
+        list.unshift({
+          id: 'p-' + Date.now(),
+          title,
+          category,
+          url: finalUrl
+        });
+        StorageDB.savePortfolio(list);
+        renderPortfolioAdmin();
+        closeModal('modal-photo');
+        document.getElementById('form-add-photo').reset();
+      }
+
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          savePhoto(evt.target.result);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else if (urlInput) {
+        savePhoto(urlInput);
+      } else {
+        alert("Please provide an image URL or choose a file.");
+      }
+    });
+
+    document.getElementById('form-add-service').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('service-title').value;
+      const price = document.getElementById('service-price').value;
+      const icon = document.getElementById('service-icon').value || '✨';
+      const description = document.getElementById('service-desc').value;
+
+      const list = StorageDB.getServices();
+      list.push({
+        id: 's-' + Date.now(),
+        title,
+        price,
+        icon,
+        description
+      });
+      StorageDB.saveServices(list);
+      renderServicesAdmin();
+      closeModal('modal-service');
+      document.getElementById('form-add-service').reset();
+    });
+
+    document.getElementById('form-add-review').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('review-client-name').value;
+      const rating = parseInt(document.getElementById('review-rating').value, 10);
+      const emoji = document.getElementById('review-emoji').value || '👰';
+      const text = document.getElementById('review-text').value;
+
+      const list = StorageDB.getTestimonials();
+      list.unshift({
+        id: 't-' + Date.now(),
+        name,
+        rating,
+        emoji,
+        text,
+        status: 'approved',
+        date: new Date().toISOString().slice(0, 10)
+      });
+      StorageDB.saveTestimonials(list);
+      renderReviewsAdmin();
+      renderDashboard();
+      closeModal('modal-review');
+      document.getElementById('form-add-review').reset();
+    });
+
+    document.getElementById('form-add-apt').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('apt-name').value;
+      const phone = document.getElementById('apt-phone').value;
+      const email = document.getElementById('apt-email').value;
+      const eventDate = document.getElementById('apt-date').value;
+      const service = document.getElementById('apt-service').value;
+      const message = document.getElementById('apt-message').value;
+
+      StorageDB.addAppointment({
+        id: 'apt-' + Date.now(),
+        name,
+        phone,
+        email,
+        eventDate,
+        service,
+        message,
+        status: 'Confirmed',
+        createdAt: new Date().toISOString()
+      });
+
+      renderDashboard();
+      renderAppointmentsTable();
+      closeModal('modal-apt');
+      document.getElementById('form-add-apt').reset();
+    });
+
+    // Check auth on load
+    checkAuth();
+  </script>
+</body>
+</html>

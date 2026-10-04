@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leave a Review | Sayali Banode Makeup Artist</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            playfair: ['Playfair Display', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            gold: {
+              DEFAULT: '#D4AF37',
+              light: '#E8D5A1',
+              dark: '#B38F24'
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    .font-playfair { font-family: 'Playfair Display', serif; }
+    .gradient-text {
+      background: linear-gradient(135deg, #D4AF37 0%, #E8D5A1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #FAF8F3 0%, #E8CFC7 100%);
+    }
+    .dark .gradient-bg {
+      background: linear-gradient(135deg, #18181b 0%, #09090b 100%);
+    }
+    .star-btn {
+      transition: transform 0.15s ease, color 0.15s ease;
+    }
+    .star-btn:hover {
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body class="bg-stone-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 font-sans min-h-screen flex items-center justify-center p-4">
+
+  <div class="max-w-xl w-full bg-white dark:bg-zinc-900 border border-gold/30 rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden">
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gold/15 flex items-center justify-center text-3xl shadow-inner">
+        ✨
+      </div>
+      <span class="text-xs uppercase tracking-widest text-gold font-bold">Sayali Banode Makeup Artist</span>
+      <h1 class="text-3xl md:text-4xl font-playfair font-bold mt-1">Share Your Experience</h1>
+      <p class="text-xs md:text-sm text-zinc-500 dark:text-zinc-400 mt-2 max-w-sm mx-auto">
+        Your feedback helps brides make the right choice for their big day. Thank you for your love and support!
+      </p>
+    </div>
+
+    <!-- Review Form -->
+    <form id="review-form" class="space-y-6">
+      
+      <!-- Interactive Star Rating -->
+      <div class="text-center bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+        <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-2">How was your look &amp; service?</label>
+        <div class="flex items-center justify-center space-x-2 text-3xl" id="stars-container">
+          <button type="button" class="star-btn text-gold" data-star="1">★</button>
+          <button type="button" class="star-btn text-gold" data-star="2">★</button>
+          <button type="button" class="star-btn text-gold" data-star="3">★</button>
+          <button type="button" class="star-btn text-gold" data-star="4">★</button>
+          <button type="button" class="star-btn text-gold" data-star="5">★</button>
+        </div>
+        <input type="hidden" id="selected-rating" value="5" />
+        <span id="rating-label" class="text-xs text-gold font-medium mt-1 block">5.0 - Flawless &amp; Unforgettable!</span>
+      </div>
+
+      <!-- Client Name & Occasion -->
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label for="client-name" class="block text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-1.5">Your Name *</label>
+          <input type="text" id="client-name" required placeholder="e.g. Aditi Rao" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-sm focus:border-gold outline-none" />
+        </div>
+        <div>
+          <label for="client-occasion" class="block text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-1.5">Occasion / Event</label>
+          <select id="client-occasion" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-sm focus:border-gold outline-none">
+            <option value="👰 Wedding / Bridal">👰 Wedding / Bridal</option>
+            <option value="💍 Engagement">💍 Engagement</option>
+            <option value="✨ Reception">✨ Reception</option>
+            <option value="🎉 Party / Sangeet">🎉 Party / Sangeet</option>
+            <option value="📷 Editorial / Fashion Shoot">📷 Editorial / Fashion Shoot</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Feedback Review Text -->
+      <div>
+        <label for="client-review" class="block text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-1.5">Your Review *</label>
+        <textarea id="client-review" required rows="4" placeholder="How did you feel about the makeup? Did it stay long? Did you get compliments? Share your genuine thoughts..." class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-sm focus:border-gold outline-none leading-relaxed"></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" id="btn-submit-review" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold text-base py-3.5 rounded-xl shadow-lg transition duration-200">
+        Submit Review 🌟
+      </button>
+
+      <div class="text-center pt-2">
+        <a href="index.html" class="text-xs text-zinc-500 hover:text-gold transition">Visit Website</a>
+      </div>
+    </form>
+
+    <!-- Success Screen (Hidden by default) -->
+    <div id="success-screen" class="hidden text-center py-8 space-y-4">
+      <div class="w-20 h-20 mx-auto rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center text-4xl">
+        ✓
+      </div>
+      <h2 class="text-2xl font-playfair font-bold text-zinc-900 dark:text-white">Thank You So Much!</h2>
+      <p class="text-sm text-zinc-600 dark:text-zinc-400 max-w-sm mx-auto">
+        Your review has been successfully submitted and added to Sayali Banode's portfolio testimonials!
+      </p>
+      <div class="pt-6">
+        <a href="index.html" class="inline-block bg-gold hover:bg-gold-dark text-black font-semibold px-6 py-2.5 rounded-xl text-sm transition">
+          View Website &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared DB Script -->
+  <script src="db.js"></script>
+
+  <script>
+    // Star Rating Logic
+    const stars = document.querySelectorAll('.star-btn');
+    const ratingInput = document.getElementById('selected-rating');
+    const ratingLabel = document.getElementById('rating-label');
+
+    const labels = {
+      1: "1.0 - Needs Improvement",
+      2: "2.0 - Fair",
+      3: "3.0 - Good",
+      4: "4.0 - Great Experience!",
+      5: "5.0 - Flawless & Unforgettable!"
+    };
+
+    stars.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const starVal = parseInt(btn.getAttribute('data-star'), 10);
+        ratingInput.value = starVal;
+        ratingLabel.textContent = labels[starVal];
+
+        stars.forEach(s => {
+          const sVal = parseInt(s.getAttribute('data-star'), 10);
+          if (sVal <= starVal) {
+            s.classList.add('text-gold');
+            s.classList.remove('text-zinc-400', 'dark:text-zinc-600');
+          } else {
+            s.classList.remove('text-gold');
+            s.classList.add('text-zinc-400', 'dark:text-zinc-600');
+          }
+        });
+      });
+    });
+
+    // Form Submission
+    const form = document.getElementById('review-form');
+    const successScreen = document.getElementById('success-screen');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('client-name').value;
+      const occasion = document.getElementById('client-occasion').value;
+      const rating = parseInt(ratingInput.value, 10);
+      const text = document.getElementById('client-review').value;
+
+      // Extract emoji from occasion
+      const emoji = occasion.slice(0, 2).trim() || '👰';
+
+      StorageDB.addTestimonial({
+        id: 't-' + Date.now(),
+        name: name,
+        rating: rating,
+        emoji: emoji,
+        text: text,
+        status: 'approved',
+        date: new Date().toISOString().slice(0, 10)
+      });
+
+      form.classList.add('hidden');
+      successScreen.classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sayali Banode Makeup Artist | Professional Bridal & Party Makeup</title>
+  <meta name="description" content="Premium makeup artistry for weddings, parties, and special occasions. Creating flawless, elegant, and unforgettable looks with personalized beauty experience." />
+  <meta name="keywords" content="makeup artist, bridal makeup, party makeup, HD makeup, airbrush makeup, Mumbai makeup artist, professional makeup" />
+
+  <!-- Google Fonts: Playfair Display + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            playfair: ['Playfair Display', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            gold: {
+              DEFAULT: '#D4AF37',
+              light: '#E8D5A1',
+              dark: '#B38F24'
+            },
+            charcoal: '#1A1A1A'
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    .font-playfair {
+      font-family: 'Playfair Display', serif;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #D4AF37 0%, #E8D5A1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #FAF8F3 0%, #E8CFC7 100%);
+    }
+    .dark .gradient-bg {
+      background: linear-gradient(135deg, #18181b 0%, #09090b 100%);
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .dark .glass {
+      background: rgba(24, 24, 27, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-dark {
+      background: rgba(27, 27, 27, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #D4AF37, #E8D5A1);
+      width: 0%;
+      z-index: 100;
+      transition: width 0.1s ease-out;
+    }
+    .service-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .service-card:hover {
+      transform: translateY(-8px);
+    }
+  </style>
+</head>
+<body class="bg-stone-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 font-sans transition-colors duration-300 antialiased selection:bg-gold selection:text-white">
+
+  <!-- Reading Progress Bar -->
+  <div id="scroll-progress"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed top-6 right-6 z-50 transform translate-y-[-150%] opacity-0 transition-all duration-500 max-w-md bg-white dark:bg-zinc-900 border-2 border-gold shadow-2xl rounded-2xl p-4 flex items-center space-x-3 pointer-events-none">
+    <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center text-gold text-xl font-bold">✓</div>
+    <div>
+      <h4 class="font-semibold text-zinc-900 dark:text-white" id="toast-title">Success</h4>
+      <p class="text-sm text-zinc-600 dark:text-zinc-400" id="toast-message">Booking request submitted successfully! We will contact you soon.</p>
+    </div>
+  </div>
+
+  <!-- Header / Navigation -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-transparent py-5">
+    <div class="container mx-auto px-4 md:px-8 flex items-center justify-between">
+      <a href="#home" class="text-2xl md:text-3xl font-playfair font-bold gradient-text tracking-wide dynamic-artist-name">
+        Sayali Banode
+      </a>
+
+      <!-- Desktop Menu -->
+      <div class="hidden lg:flex items-center space-x-8">
+        <a href="#home" class="text-sm font-medium hover:text-gold transition-colors">Home</a>
+        <a href="#about" class="text-sm font-medium hover:text-gold transition-colors">About</a>
+        <a href="#services" class="text-sm font-medium hover:text-gold transition-colors">Services</a>
+        <a href="#portfolio" class="text-sm font-medium hover:text-gold transition-colors">Portfolio</a>
+        <a href="#testimonials" class="text-sm font-medium hover:text-gold transition-colors">Testimonials</a>
+        <a href="#contact" class="text-sm font-medium hover:text-gold transition-colors">Contact</a>
+
+        <a href="#booking" class="bg-gold hover:bg-gold-dark text-black font-semibold px-5 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105">
+          Book Now
+        </a>
+
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" aria-label="Toggle Theme" class="p-2.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
+          <!-- Sun Icon -->
+          <svg id="sun-icon" class="w-5 h-5 hidden text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <!-- Moon Icon -->
+          <svg id="moon-icon" class="w-5 h-5 text-zinc-700 dark:text-zinc-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile Menu Actions -->
+      <div class="lg:hidden flex items-center space-x-3">
+        <button id="mobile-theme-toggle" class="p-2 rounded-full hover:bg-black/10 dark:hover:bg-white/10">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </button>
+        <button id="mobile-menu-btn" aria-label="Open Navigation Menu" class="p-2 rounded-lg hover:bg-black/10 dark:hover:bg-white/10">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden glass-dark text-white px-6 py-6 mt-3 space-y-4 border-t border-white/10">
+      <a href="#home" class="block py-1.5 hover:text-gold transition-colors">Home</a>
+      <a href="#about" class="block py-1.5 hover:text-gold transition-colors">About</a>
+      <a href="#services" class="block py-1.5 hover:text-gold transition-colors">Services</a>
+      <a href="#portfolio" class="block py-1.5 hover:text-gold transition-colors">Portfolio</a>
+      <a href="#testimonials" class="block py-1.5 hover:text-gold transition-colors">Testimonials</a>
+      <a href="#contact" class="block py-1.5 hover:text-gold transition-colors">Contact</a>
+      <a href="#booking" class="block text-center bg-gold hover:bg-gold-dark text-black py-2.5 rounded-full font-semibold mt-4">Book Now</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="https://images.unsplash.com/photo-1548112129-b5cf67e9558d" alt="Hero Bridal Makeup" class="w-full h-full object-cover scale-105 filter brightness-90 animate-pulse duration-1000" style="animation-duration: 8s;" />
+      <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/30"></div>
+    </div>
+
+    <div class="relative z-10 container mx-auto px-4 md:px-8 text-center text-white max-w-4xl">
+      <span class="inline-block px-4 py-1.5 rounded-full border border-gold/40 text-gold text-xs uppercase tracking-widest font-semibold mb-6 bg-black/40 backdrop-blur-md">
+        Certified Professional Makeup Artist
+      </span>
+      <h1 class="text-5xl md:text-7xl font-playfair font-bold mb-6 tracking-tight leading-tight dynamic-artist-name">
+        Sayali Banode
+      </h1>
+      <p class="text-xl md:text-2xl text-amber-100 font-light mb-4">
+        Professional Bridal &amp; Party Makeup
+      </p>
+      <p class="text-base md:text-lg text-zinc-300 max-w-2xl mx-auto mb-10 font-light leading-relaxed">
+        Creating flawless, elegant, and unforgettable looks with a personalized luxury beauty experience tailored to you.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#portfolio" class="w-full sm:w-auto bg-gold hover:bg-gold-dark text-black text-lg px-8 py-3.5 rounded-full font-semibold shadow-xl hover:shadow-gold/30 hover:scale-105 transition-all duration-300">
+          View Portfolio
+        </a>
+        <a href="#booking" class="w-full sm:w-auto border-2 border-white/80 hover:border-gold text-white hover:bg-gold hover:text-black text-lg px-8 py-3.5 rounded-full font-semibold transition-all duration-300">
+          Book Appointment
+        </a>
+      </div>
+    </div>
+
+    <!-- Scroll Down Indicator -->
+    <a href="#about" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/60 hover:text-gold transition-colors animate-bounce">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    </a>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-24 gradient-bg">
+    <div class="container mx-auto px-4 md:px-8">
+      <div class="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <!-- Portrait Image -->
+        <div class="relative group">
+          <div class="absolute -inset-2 bg-gradient-to-r from-gold to-amber-200 rounded-2xl blur-lg opacity-40 group-hover:opacity-60 transition duration-500"></div>
+          <div class="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-gold/30 bg-zinc-900">
+            <img src="https://images.pexels.com/photos/5149734/pexels-photo-5149734.jpeg" alt="Sayali Banode Makeup Artist" class="w-full h-auto object-cover transform group-hover:scale-105 transition duration-700" />
+          </div>
+        </div>
+
+        <!-- Bio & Stats -->
+        <div>
+          <span class="text-gold uppercase tracking-wider text-sm font-semibold">About The Artist</span>
+          <h2 class="text-4xl md:text-5xl font-playfair font-bold mt-2 mb-6">
+            About <span class="gradient-text dynamic-artist-name">Sayali Banode</span>
+          </h2>
+          <p class="text-lg text-zinc-700 dark:text-zinc-300 mb-6 leading-relaxed">
+            Welcome! I'm <strong class="dynamic-artist-name">Sayali Banode</strong>, a professional makeup artist dedicated to enhancing natural beauty and creating confidence in every client. With years of experience in bridal, party, and editorial makeup, I bring artistry, precision, and a personalized touch to every look I create.
+          </p>
+          <p class="text-base text-zinc-600 dark:text-zinc-400 mb-8 leading-relaxed">
+            Whether it's your dream wedding day, a festive celebration, or a high-fashion shoot, I specialize in skin-first, camera-ready techniques using only high-end international cosmetics to ensure your look lasts all day and night.
+          </p>
+
+          <!-- Badges / Metrics -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+            <div class="text-center p-3 rounded-xl bg-white/60 dark:bg-zinc-900/60 shadow-sm border border-gold/20">
+              <span class="block text-3xl font-playfair font-bold text-gold">5+</span>
+              <span class="text-xs text-zinc-500 uppercase font-medium">Years Exp.</span>
+            </div>
+            <div class="text-center p-3 rounded-xl bg-white/60 dark:bg-zinc-900/60 shadow-sm border border-gold/20">
+              <span class="block text-3xl font-playfair font-bold text-gold">500+</span>
+              <span class="text-xs text-zinc-500 uppercase font-medium">Happy Brides</span>
+            </div>
+            <div class="text-center p-3 rounded-xl bg-white/60 dark:bg-zinc-900/60 shadow-sm border border-gold/20">
+              <span class="block text-3xl font-playfair font-bold text-gold">100%</span>
+              <span class="text-xs text-zinc-500 uppercase font-medium">Luxury Brands</span>
+            </div>
+            <div class="text-center p-3 rounded-xl bg-white/60 dark:bg-zinc-900/60 shadow-sm border border-gold/20">
+              <span class="block text-3xl font-playfair font-bold text-gold">5.0 ★</span>
+              <span class="text-xs text-zinc-500 uppercase font-medium">Top Rated</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services" class="py-24 bg-white dark:bg-zinc-950">
+    <div class="container mx-auto px-4 md:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-gold uppercase tracking-wider text-sm font-semibold">Specialized Artistry</span>
+        <h2 class="text-4xl md:text-5xl font-playfair font-bold mt-2 mb-4">
+          My <span class="gradient-text">Services</span>
+        </h2>
+        <p class="text-zinc-600 dark:text-zinc-400">
+          Tailored packages crafted to highlight your individuality, radiance, and grace for every special moment.
+        </p>
+      </div>
+
+      <div id="live-services-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Rendered dynamically from StorageDB -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio Section -->
+  <section id="portfolio" class="py-24 gradient-bg">
+    <div class="container mx-auto px-4 md:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-gold uppercase tracking-wider text-sm font-semibold">Gallery</span>
+        <h2 class="text-4xl md:text-5xl font-playfair font-bold mt-2 mb-4">
+          My <span class="gradient-text">Portfolio</span>
+        </h2>
+        <p class="text-zinc-600 dark:text-zinc-400">
+          A glimpse into the real transformations, radiant brides, and editorial creations by Sayali Banode.
+        </p>
+
+        <!-- Category Filters -->
+        <div class="flex flex-wrap items-center justify-center gap-2 mt-8" id="filter-tabs">
+          <button data-cat="all" class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all bg-gold text-black font-semibold shadow-md">All</button>
+          <button data-cat="bridal" class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all bg-white/70 dark:bg-zinc-900/70 text-zinc-700 dark:text-zinc-300 hover:text-gold">Bridal</button>
+          <button data-cat="reception" class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all bg-white/70 dark:bg-zinc-900/70 text-zinc-700 dark:text-zinc-300 hover:text-gold">Reception</button>
+          <button data-cat="party" class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all bg-white/70 dark:bg-zinc-900/70 text-zinc-700 dark:text-zinc-300 hover:text-gold">Party</button>
+          <button data-cat="editorial" class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all bg-white/70 dark:bg-zinc-900/70 text-zinc-700 dark:text-zinc-300 hover:text-gold">Editorial</button>
+          <button data-cat="glam" class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all bg-white/70 dark:bg-zinc-900/70 text-zinc-700 dark:text-zinc-300 hover:text-gold">Glam</button>
+        </div>
+      </div>
+
+      <!-- Portfolio Gallery Grid -->
+      <div id="portfolio-grid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Rendered dynamically from StorageDB -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox Modal -->
+  <div id="lightbox" class="fixed inset-0 z-50 bg-black/90 hidden items-center justify-center p-4 backdrop-blur-md">
+    <button id="close-lightbox" class="absolute top-6 right-6 text-white/80 hover:text-gold text-3xl font-light p-2">✕</button>
+    <div class="max-w-4xl max-h-[85vh] text-center">
+      <img id="lightbox-img" src="" alt="Enlarged Portfolio View" class="max-h-[75vh] w-auto mx-auto rounded-xl shadow-2xl object-contain border border-gold/30" />
+      <h3 id="lightbox-caption" class="text-white font-playfair text-2xl font-bold mt-4"></h3>
+    </div>
+  </div>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="py-24 bg-white dark:bg-zinc-950">
+    <div class="container mx-auto px-4 md:px-8 max-w-4xl text-center">
+      <span class="text-gold uppercase tracking-wider text-sm font-semibold">Words of Love</span>
+      <h2 class="text-4xl md:text-5xl font-playfair font-bold mt-2 mb-12">
+        Client <span class="gradient-text">Testimonials</span>
+      </h2>
+
+      <!-- Testimonial Carousel Card -->
+      <div class="relative glass p-8 md:p-14 rounded-3xl border-2 border-gold/30 shadow-2xl">
+        <div class="text-5xl mb-6">★★★★★</div>
+        <div id="testimonial-container" class="min-h-[160px] flex flex-col justify-center transition-opacity duration-300">
+          <p id="testimonial-text" class="text-xl md:text-2xl font-playfair italic text-zinc-700 dark:text-zinc-200 mb-6 leading-relaxed">
+            "Sayali made me look absolutely stunning on my wedding day! Her attention to detail and professionalism is unmatched. Highly recommended!"
+          </p>
+          <div class="flex items-center justify-center space-x-3">
+            <span id="testimonial-emoji" class="text-3xl">👰</span>
+            <h4 id="testimonial-name" class="font-bold text-lg text-zinc-900 dark:text-white">Priya Sharma</h4>
+          </div>
+        </div>
+
+        <!-- Carousel Buttons -->
+        <div class="flex items-center justify-center space-x-4 mt-8">
+          <button id="prev-test" aria-label="Previous Review" class="p-3 rounded-full border border-gold text-gold hover:bg-gold hover:text-black transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+          <div class="flex space-x-2" id="testimonial-dots">
+            <!-- Dynamic dots -->
+          </div>
+          <button id="next-test" aria-label="Next Review" class="p-3 rounded-full border border-gold text-gold hover:bg-gold hover:text-black transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+          </button>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+          <a href="review.html" class="inline-flex items-center space-x-2 text-xs font-semibold text-gold hover:underline">
+            <span>Are you a past client? Leave your own review here &rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Instagram / Beauty Journey Section -->
+  <section class="py-20 gradient-bg border-y border-gold/20">
+    <div class="container mx-auto px-4 md:px-8 text-center max-w-3xl">
+      <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
+        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.13-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+      </div>
+      <h2 class="text-3xl md:text-4xl font-playfair font-bold mb-3">
+        Follow My <span class="gradient-text">Beauty Journey</span>
+      </h2>
+      <p class="text-zinc-600 dark:text-zinc-400 mb-8">
+        Stay updated with our latest bridal makeovers, behind-the-scenes glimpses, client reels, and masterclass updates on Instagram.
+      </p>
+      <a id="link-instagram-btn" href="https://instagram.com/sayalibanodemakeup" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-3 bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:opacity-95 text-white font-medium px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+        <span>Follow on Instagram</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Booking Form Section -->
+  <section id="booking" class="py-24 bg-white dark:bg-zinc-950">
+    <div class="container mx-auto px-4 md:px-8 max-w-3xl">
+      <div class="text-center mb-14">
+        <span class="text-gold uppercase tracking-wider text-sm font-semibold">Reserve Your Date</span>
+        <h2 class="text-4xl md:text-5xl font-playfair font-bold mt-2 mb-4">
+          Book Your <span class="gradient-text">Appointment</span>
+        </h2>
+        <p class="text-zinc-600 dark:text-zinc-400">
+          Fill out the details below to request your booking or consultation. An instant confirmation is recorded and sent immediately.
+        </p>
+      </div>
+
+      <div class="glass p-8 md:p-12 rounded-3xl border-2 border-gold/30 shadow-2xl">
+        <form id="booking-form" class="space-y-6">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label for="name" class="block text-sm font-semibold mb-2">Full Name *</label>
+              <input type="text" id="name" required placeholder="Your name" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 focus:border-gold focus:ring-1 focus:ring-gold outline-none transition" />
+            </div>
+            <div>
+              <label for="phone" class="block text-sm font-semibold mb-2">Phone Number *</label>
+              <input type="tel" id="phone" required placeholder="+91 XXXXX XXXXX" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 focus:border-gold focus:ring-1 focus:ring-gold outline-none transition" />
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label for="email" class="block text-sm font-semibold mb-2">Email Address *</label>
+              <input type="email" id="email" required placeholder="your.email@example.com" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 focus:border-gold focus:ring-1 focus:ring-gold outline-none transition" />
+            </div>
+            <div>
+              <label for="eventDate" class="block text-sm font-semibold mb-2">Event Date *</label>
+              <input type="date" id="eventDate" required class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 focus:border-gold focus:ring-1 focus:ring-gold outline-none transition" />
+              <p id="date-warning" class="text-xs text-amber-500 font-medium mt-1 hidden">⚠️ Note: Sayali has an existing bridal booking on this date. You can still submit for alternate slots.</p>
+            </div>
+          </div>
+
+          <div>
+            <label for="service" class="block text-sm font-semibold mb-2">Select Service *</label>
+            <select id="service" required class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 focus:border-gold focus:ring-1 focus:ring-gold outline-none transition">
+              <!-- Rendered dynamically -->
+            </select>
+          </div>
+
+          <div>
+            <label for="message" class="block text-sm font-semibold mb-2">Event Details, Venue &amp; Requirements</label>
+            <textarea id="message" rows="4" placeholder="Tell me about your venue, event timings, requirements..." class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 focus:border-gold focus:ring-1 focus:ring-gold outline-none transition"></textarea>
+          </div>
+
+          <button type="submit" id="submit-btn" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold text-lg py-4 rounded-xl shadow-lg hover:shadow-gold/30 hover:scale-[1.01] transition-all duration-300">
+            Book Appointment
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-24 gradient-bg">
+    <div class="container mx-auto px-4 md:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-gold uppercase tracking-wider text-sm font-semibold">Connect</span>
+        <h2 class="text-4xl md:text-5xl font-playfair font-bold mt-2 mb-4">
+          Get In <span class="gradient-text">Touch</span>
+        </h2>
+        <p class="text-zinc-600 dark:text-zinc-400">
+          Have queries or customized bridal package requirements? Reach out directly.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <!-- Phone -->
+        <a id="contact-phone-link" href="tel:+917030477747" class="group p-8 rounded-2xl bg-white/70 dark:bg-zinc-900/70 border border-gold/30 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 text-center">
+          <div class="w-14 h-14 mx-auto mb-4 rounded-xl bg-gold/10 text-gold flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+            📞
+          </div>
+          <h3 class="font-playfair font-bold text-xl mb-1">Phone</h3>
+          <p id="contact-phone-text" class="text-gold font-medium text-sm">+91 7030477747</p>
+        </a>
+
+        <!-- Email -->
+        <a id="contact-email-link" href="mailto:sayali@example.com" class="group p-8 rounded-2xl bg-white/70 dark:bg-zinc-900/70 border border-gold/30 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 text-center">
+          <div class="w-14 h-14 mx-auto mb-4 rounded-xl bg-gold/10 text-gold flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+            ✉️
+          </div>
+          <h3 class="font-playfair font-bold text-xl mb-1">Email</h3>
+          <p id="contact-email-text" class="text-gold font-medium text-sm">sayali@example.com</p>
+        </a>
+
+        <!-- Location -->
+        <div class="group p-8 rounded-2xl bg-white/70 dark:bg-zinc-900/70 border border-gold/30 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 text-center">
+          <div class="w-14 h-14 mx-auto mb-4 rounded-xl bg-gold/10 text-gold flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+            📍
+          </div>
+          <h3 class="font-playfair font-bold text-xl mb-1">Location</h3>
+          <p id="contact-location-text" class="text-zinc-600 dark:text-zinc-400 font-medium text-sm">Mumbai, Maharashtra</p>
+        </div>
+      </div>
+
+      <!-- Social Media Buttons -->
+      <div class="flex justify-center space-x-4 mt-12">
+        <a id="social-instagram" href="https://instagram.com/sayalibanodemakeup" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="w-12 h-12 rounded-full border-2 border-gold text-gold hover:bg-gold hover:text-black flex items-center justify-center transition-all hover:scale-110">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.13-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a id="social-whatsapp" href="https://wa.me/917030477747" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" class="w-12 h-12 rounded-full border-2 border-gold text-gold hover:bg-gold hover:text-black flex items-center justify-center transition-all hover:scale-110">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+        </a>
+        <a id="social-facebook" href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="w-12 h-12 rounded-full border-2 border-gold text-gold hover:bg-gold hover:text-black flex items-center justify-center transition-all hover:scale-110">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8H6v4h3v12h5V12h3.642L18 8h-4V6.333C14 5.374 14.5 5 15.657 5H18V0h-3.808C10.597 0 9 1.583 9 4.615V8z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 bg-zinc-950 text-white border-t border-zinc-800">
+    <div class="container mx-auto px-4 md:px-8 text-center">
+      <h3 class="text-2xl font-playfair font-bold gradient-text mb-4 dynamic-artist-name">Sayali Banode</h3>
+      <p class="text-zinc-400 text-sm max-w-md mx-auto mb-6">
+        Professional bridal, reception, party, and editorial makeup artist based in Mumbai.
+      </p>
+      <div class="flex justify-center space-x-6 text-sm text-zinc-400 mb-8">
+        <a href="#home" class="hover:text-gold transition-colors">Home</a>
+        <a href="#about" class="hover:text-gold transition-colors">About</a>
+        <a href="#services" class="hover:text-gold transition-colors">Services</a>
+        <a href="#portfolio" class="hover:text-gold transition-colors">Portfolio</a>
+        <a href="#testimonials" class="hover:text-gold transition-colors">Testimonials</a>
+        <a href="#contact" class="hover:text-gold transition-colors">Contact</a>
+        <a href="admin.html" class="text-zinc-500 hover:text-gold transition-colors inline-flex items-center space-x-1" title="Sayali Admin Portal">
+          <span>🔒</span>
+          <span>Admin</span>
+        </a>
+      </div>
+      <p class="text-xs text-zinc-500">
+        &copy; <span id="year"></span> <span class="dynamic-artist-name">Sayali Banode</span> Makeup Artist. All rights reserved. | Designed with ❤️
+      </p>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp Action Button -->
+  <a id="floating-whatsapp" href="https://wa.me/917030477747" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" class="fixed bottom-6 right-6 z-40 bg-emerald-500 hover:bg-emerald-600 text-white p-4 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center group">
+    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+    </svg>
+    <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs group-hover:ml-2 font-semibold text-sm transition-all duration-300">
+      Chat on WhatsApp
+    </span>
+  </a>
+
+  <!-- Shared DB Script -->
+  <script src="db.js"></script>
+
+  <!-- Interactive JavaScript Logic -->
+  <script>
+    // Copyright Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // 1. Sync Dynamic Site Settings
+    function applyDynamicSettings() {
+      const s = StorageDB.getSettings();
+      document.querySelectorAll('.dynamic-artist-name').forEach(el => el.textContent = s.artistName || 'Sayali Banode');
+      
+      const phoneClean = (s.whatsapp || '917030477747').replace(/[^0-9]/g, '');
+      const waUrl = `https://wa.me/${phoneClean}`;
+      
+      document.getElementById('floating-whatsapp').href = waUrl;
+      document.getElementById('social-whatsapp').href = waUrl;
+      document.getElementById('contact-phone-link').href = `tel:${s.phone}`;
+      document.getElementById('contact-phone-text').textContent = s.phone;
+      document.getElementById('contact-email-link').href = `mailto:${s.email}`;
+      document.getElementById('contact-email-text').textContent = s.email;
+      document.getElementById('contact-location-text').textContent = s.location;
+      document.getElementById('social-instagram').href = s.instagram;
+      document.getElementById('link-instagram-btn').href = s.instagram;
+      document.getElementById('social-facebook').href = s.facebook;
+    }
+    applyDynamicSettings();
+
+    // 2. Render Dynamic Services
+    function renderDynamicServices() {
+      const services = StorageDB.getServices();
+      const container = document.getElementById('live-services-grid');
+      const select = document.getElementById('service');
+      
+      select.innerHTML = '<option value="">Select a service</option>' + services.map(s => `
+        <option value="${s.title}">${s.title} ${s.price ? `(${s.price})` : ''}</option>
+      `).join('');
+
+      container.innerHTML = services.map(s => `
+        <div class="service-card group p-8 rounded-2xl bg-zinc-50 dark:bg-zinc-900/80 border-2 border-transparent hover:border-gold shadow-md hover:shadow-2xl">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-4xl p-3 rounded-xl bg-gold/10 inline-block">${s.icon || '✨'}</span>
+            ${s.price ? `<span class="text-gold font-bold text-sm bg-gold/10 px-3 py-1 rounded-full">${s.price}</span>` : ''}
+          </div>
+          <h3 class="text-2xl font-playfair font-bold mb-3 group-hover:text-gold transition-colors">${s.title}</h3>
+          <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
+            ${s.description}
+          </p>
+          <a href="#booking" onclick="selectServiceOption('${s.title}')" class="text-gold font-semibold inline-flex items-center space-x-1 group-hover:translate-x-1 transition-transform">
+            <span>Book Consultation</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+      `).join('');
+    }
+    renderDynamicServices();
+
+    function selectServiceOption(title) {
+      const select = document.getElementById('service');
+      select.value = title;
+    }
+
+    // 3. Render Dynamic Portfolio
+    function renderDynamicPortfolio(category = 'all') {
+      const items = StorageDB.getPortfolio();
+      const grid = document.getElementById('portfolio-grid');
+
+      const filtered = category === 'all' ? items : items.filter(p => p.category === category);
+      
+      grid.innerHTML = filtered.map(p => `
+        <div class="portfolio-item relative group overflow-hidden rounded-xl shadow-lg cursor-pointer bg-zinc-900 aspect-[3/4]" data-category="${p.category}" data-src="${p.url}" data-title="${p.title}">
+          <img src="${p.url}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" loading="lazy" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+            <span class="text-gold text-xs font-semibold uppercase tracking-wider">${p.category}</span>
+            <h3 class="text-white text-xl font-playfair font-bold">${p.title}</h3>
+          </div>
+        </div>
+      `).join('');
+
+      // Attach Lightbox triggers
+      document.querySelectorAll('.portfolio-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const src = item.getAttribute('data-src');
+          const title = item.getAttribute('data-title');
+          document.getElementById('lightbox-img').src = src;
+          document.getElementById('lightbox-caption').textContent = title;
+          document.getElementById('lightbox').classList.remove('hidden');
+          document.getElementById('lightbox').classList.add('flex');
+        });
+      });
+    }
+    renderDynamicPortfolio();
+
+    // 4. Portfolio Filter Tabs
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => {
+          b.classList.remove('bg-gold', 'text-black', 'font-semibold', 'shadow-md');
+          b.classList.add('bg-white/70', 'dark:bg-zinc-900/70', 'text-zinc-700', 'dark:text-zinc-300');
+        });
+        btn.classList.remove('bg-white/70', 'dark:bg-zinc-900/70', 'text-zinc-700', 'dark:text-zinc-300');
+        btn.classList.add('bg-gold', 'text-black', 'font-semibold', 'shadow-md');
+        renderDynamicPortfolio(btn.getAttribute('data-cat'));
+      });
+    });
+
+    // 5. Lightbox Close Handlers
+    const lightbox = document.getElementById('lightbox');
+    document.getElementById('close-lightbox').addEventListener('click', () => {
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+    });
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        lightbox.classList.add('hidden');
+        lightbox.classList.remove('flex');
+      }
+    });
+
+    // 6. Testimonial Carousel with Dynamic DB
+    let testimonials = StorageDB.getTestimonials();
+    let currentTest = 0;
+    const testText = document.getElementById('testimonial-text');
+    const testName = document.getElementById('testimonial-name');
+    const testEmoji = document.getElementById('testimonial-emoji');
+    const dotsContainer = document.getElementById('testimonial-dots');
+
+    function initTestimonials() {
+      testimonials = StorageDB.getTestimonials();
+      if (!testimonials || testimonials.length === 0) return;
+      dotsContainer.innerHTML = testimonials.map((_, i) => `
+        <span class="w-3 h-3 rounded-full ${i === 0 ? 'bg-gold' : 'bg-gold/30'} inline-block transition-all"></span>
+      `).join('');
+      updateTestimonial(0);
+    }
+
+    function updateTestimonial(idx) {
+      if (!testimonials || testimonials.length === 0) return;
+      testText.parentElement.style.opacity = '0';
+      setTimeout(() => {
+        testText.textContent = `"${testimonials[idx].text}"`;
+        testName.textContent = testimonials[idx].name;
+        testEmoji.textContent = testimonials[idx].emoji || '👰';
+        testText.parentElement.style.opacity = '1';
+
+        const dots = dotsContainer.children;
+        for (let i = 0; i < dots.length; i++) {
+          dots[i].className = `w-3 h-3 rounded-full ${i === idx ? 'bg-gold' : 'bg-gold/30'} inline-block transition-all`;
+        }
+      }, 200);
+    }
+
+    document.getElementById('prev-test').addEventListener('click', () => {
+      if (!testimonials || testimonials.length === 0) return;
+      currentTest = (currentTest === 0) ? testimonials.length - 1 : currentTest - 1;
+      updateTestimonial(currentTest);
+    });
+
+    document.getElementById('next-test').addEventListener('click', () => {
+      if (!testimonials || testimonials.length === 0) return;
+      currentTest = (currentTest === testimonials.length - 1) ? 0 : currentTest + 1;
+      updateTestimonial(currentTest);
+    });
+
+    setInterval(() => {
+      if (!testimonials || testimonials.length === 0) return;
+      currentTest = (currentTest + 1) % testimonials.length;
+      updateTestimonial(currentTest);
+    }, 6000);
+
+    initTestimonials();
+
+    // 7. Scroll Progress Bar & Dynamic Navbar
+    const progressBar = document.getElementById('scroll-progress');
+    const navbar = document.getElementById('navbar');
+
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolledPercent = (winScroll / height) * 100;
+      progressBar.style.width = scrolledPercent + '%';
+
+      if (winScroll > 60) {
+        navbar.classList.remove('bg-transparent', 'py-5');
+        navbar.classList.add('glass-dark', 'shadow-xl', 'py-3');
+      } else {
+        navbar.classList.add('bg-transparent', 'py-5');
+        navbar.classList.remove('glass-dark', 'shadow-xl', 'py-3');
+      }
+    });
+
+    // 8. Theme Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+    const sunIcon = document.getElementById('sun-icon');
+    const moonIcon = document.getElementById('moon-icon');
+
+    function applyTheme(isDark) {
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+        localStorage.setItem('theme', 'light');
+      }
+    }
+
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(savedTheme ? savedTheme === 'dark' : prefersDark);
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.contains('dark');
+      applyTheme(!isDark);
+    }
+    themeToggle.addEventListener('click', toggleTheme);
+    mobileThemeToggle.addEventListener('click', toggleTheme);
+
+    // 9. Mobile Menu Toggle
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    });
+
+    // 10. Check Blocked Dates on Event Date Selection
+    const eventDateInput = document.getElementById('eventDate');
+    const dateWarning = document.getElementById('date-warning');
+    eventDateInput.addEventListener('change', () => {
+      const blocked = StorageDB.getBlockedDates();
+      if (blocked.includes(eventDateInput.value)) {
+        dateWarning.classList.remove('hidden');
+      } else {
+        dateWarning.classList.add('hidden');
+      }
+    });
+
+    // 11. Toast Helper
+    function showToast(title, msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-title').textContent = title;
+      document.getElementById('toast-message').textContent = msg;
+      toast.classList.remove('translate-y-[-150%]', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.add('translate-y-[-150%]', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 6000);
+    }
+
+    // 12. Automated Dual Email + Booking Submission
+    const bookingForm = document.getElementById('booking-form');
+    const submitBtn = document.getElementById('submit-btn');
+
+    bookingForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Recording Appointment...';
+
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const email = document.getElementById('email').value;
+      const eventDate = document.getElementById('eventDate').value;
+      const service = document.getElementById('service').value;
+      const message = document.getElementById('message').value;
+
+      // 1. Save to Database
+      const newApt = {
+        id: 'apt-' + Date.now(),
+        name,
+        phone,
+        email,
+        eventDate,
+        service,
+        message,
+        status: 'Pending',
+        createdAt: new Date().toISOString()
+      };
+      StorageDB.addAppointment(newApt);
+
+      // 2. Automated Email via Web3Forms (if configured)
+      const settings = StorageDB.getSettings();
+      if (settings.emailServiceKey) {
+        try {
+          await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              access_key: settings.emailServiceKey,
+              subject: `New Bridal Booking: ${name} (${service}) - ${eventDate}`,
+              from_name: "Sayali Banode Website",
+              name: name,
+              phone: phone,
+              email: email,
+              event_date: eventDate,
+              service: service,
+              requirements: message,
+              message: `New booking request received on your website from ${name}.\nPhone: ${phone}\nEmail: ${email}\nDate: ${eventDate}\nService: ${service}\nMessage: ${message}`
+            })
+          });
+        } catch (err) {
+          console.warn("Email service transmission:", err);
+        }
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Book Appointment';
+      showToast('Booking Submitted!', 'Thank you! Your appointment request has been recorded. Sayali will review and contact you shortly.');
+
+      // Option to also confirm on WhatsApp
+      const cleanPhone = (settings.whatsapp || '917030477747').replace(/[^0-9]/g, '');
+      const waText = encodeURIComponent(`Hi Sayali! I just submitted an appointment request on your website for ${service} on ${eventDate}.\nName: ${name}\nPhone: ${phone}`);
+      
+      const openWa = confirm("Appointment submitted! Would you also like to open WhatsApp to connect directly with Sayali right now?");
+      if (openWa) {
+        window.open(`https://wa.me/${cleanPhone}?text=${waText}`, '_blank');
+      }
+
+      bookingForm.reset();
+      dateWarning.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>

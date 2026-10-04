@@ -131,6 +131,7 @@ INSERT INTO public.settings (key, value) VALUES
   "phone": "+91 7030477747",
   "whatsapp": "917030477747",
   "email": "sayali@example.com",
+  "notificationEmails": ["sayali@example.com"],
   "location": "Amravati, Maharashtra",
   "instagram": "https://instagram.com/sayalibanodemakeup",
   "facebook": "https://facebook.com",

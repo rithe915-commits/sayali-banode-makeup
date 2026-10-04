@@ -435,46 +435,6 @@
               </div>
             </div>
 
-            <!-- Automated Email Notification Status -->
-            <div class="border-b border-zinc-800 pb-6">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800">
-                <div>
-                  <div class="flex items-center space-x-2">
-                    <span class="text-base">📨</span>
-                    <h3 class="text-sm font-semibold text-white">Automated Booking Emails</h3>
-                  </div>
-                  <p class="text-xs text-zinc-400 mt-1">
-                    Sent automatically from <code class="text-amber-300 font-mono">rivasatechnologies@gmail.com</code> via Vercel <code class="text-amber-300 font-mono">GMAIL_APP_PASSWORD</code> to Sayali & the customer upon each booking.
-                  </p>
-                </div>
-                <div>
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-800">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span> Active (Gmail SMTP)
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Supabase Cloud Database Status (Managed via Vercel Environment Variables) -->
-            <div class="border-b border-zinc-800 pb-6">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800">
-                <div>
-                  <div class="flex items-center space-x-2">
-                    <span class="text-base">⚡</span>
-                    <h3 class="text-sm font-semibold text-white">Supabase Cloud Database</h3>
-                  </div>
-                  <p class="text-xs text-zinc-400 mt-1">
-                    Managed automatically via Vercel Environment Variables (<code class="text-amber-300 font-mono">SUPABASE_URL</code> & <code class="text-amber-300 font-mono">SUPABASE_ANON_KEY</code>).
-                  </p>
-                </div>
-                <div>
-                  <span id="supabase-status-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-zinc-800 text-zinc-400 border border-zinc-700">
-                    <span class="w-2 h-2 rounded-full bg-zinc-500 mr-2"></span> Checking Cloud Sync...
-                  </span>
-                </div>
-              </div>
-            </div>
-
             <!-- Password Security -->
             <div>
               <h3 class="text-base font-semibold text-gold mb-4">🔒 Admin Password</h3>
@@ -1038,21 +998,7 @@
       document.getElementById('setting-instagram').value = s.instagram || '';
       document.getElementById('setting-facebook').value = s.facebook || '';
       document.getElementById('setting-password').value = s.adminPassword || 'admin';
-      updateSupabaseBadge();
     }
-
-    function updateSupabaseBadge() {
-      const badge = document.getElementById('supabase-status-badge');
-      if (!badge) return;
-      if (StorageDB.isSupabaseConfigured()) {
-        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span> Cloud Synced (Vercel Env)';
-        badge.className = "inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-800";
-      } else {
-        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-zinc-500 mr-2"></span> Local Storage Mode';
-        badge.className = "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-zinc-800 text-zinc-400 border border-zinc-700";
-      }
-    }
-    window.onSupabaseReady = updateSupabaseBadge;
 
     document.getElementById('settings-form').addEventListener('submit', (e) => {
       e.preventDefault();

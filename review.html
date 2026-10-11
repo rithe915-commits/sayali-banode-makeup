@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
   <title>Leave a Review | Sayali Banode Makeup Artist</title>
   
   <!-- Fonts -->
@@ -36,6 +36,22 @@
   </script>
 
   <style>
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    body {
+      overflow-x: hidden;
+      max-width: 100vw;
+      -webkit-tap-highlight-color: transparent;
+      padding-bottom: env(safe-area-inset-bottom, 1rem);
+      padding-top: env(safe-area-inset-top, 1rem);
+    }
+    @media screen and (max-width: 768px) {
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+    }
     .font-playfair { font-family: 'Playfair Display', serif; }
     .gradient-text {
       background: linear-gradient(135deg, #D4AF37 0%, #E8D5A1 100%);
@@ -49,34 +65,39 @@
       background: linear-gradient(135deg, #18181b 0%, #09090b 100%);
     }
     .star-btn {
+      min-width: 44px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       transition: transform 0.15s ease, color 0.15s ease;
     }
-    .star-btn:hover {
+    .star-btn:hover, .star-btn:active {
       transform: scale(1.2);
     }
   </style>
 </head>
-<body class="bg-stone-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 font-sans min-h-screen flex items-center justify-center p-4">
+<body class="bg-stone-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 font-sans min-h-screen flex items-center justify-center p-3 sm:p-4">
 
-  <div class="max-w-xl w-full bg-white dark:bg-zinc-900 border border-gold/30 rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden">
-    <div class="text-center mb-8">
-      <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gold/15 flex items-center justify-center text-3xl shadow-inner">
+  <div class="max-w-xl w-full bg-white dark:bg-zinc-900 border border-gold/30 rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 shadow-2xl relative overflow-hidden">
+    <div class="text-center mb-6 sm:mb-8">
+      <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 rounded-2xl bg-gold/15 flex items-center justify-center text-2xl sm:text-3xl shadow-inner">
         ✨
       </div>
       <span class="text-xs uppercase tracking-widest text-gold font-bold">Sayali Banode Makeup Artist</span>
-      <h1 class="text-3xl md:text-4xl font-playfair font-bold mt-1">Share Your Experience</h1>
-      <p class="text-xs md:text-sm text-zinc-500 dark:text-zinc-400 mt-2 max-w-sm mx-auto">
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-playfair font-bold mt-1">Share Your Experience</h1>
+      <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-2 max-w-sm mx-auto">
         Your feedback helps brides make the right choice for their big day. Thank you for your love and support!
       </p>
     </div>
 
     <!-- Review Form -->
-    <form id="review-form" class="space-y-6">
+    <form id="review-form" class="space-y-4 sm:space-y-6">
       
-      <!-- Interactive Star Rating -->
+      <!-- Interactive Star Rating (Touch-friendly 44px targets) -->
       <div class="text-center bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800">
         <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-2">How was your look &amp; service?</label>
-        <div class="flex items-center justify-center space-x-2 text-3xl" id="stars-container">
+        <div class="flex items-center justify-center space-x-1 sm:space-x-2 text-3xl" id="stars-container">
           <button type="button" class="star-btn text-gold" data-star="1">★</button>
           <button type="button" class="star-btn text-gold" data-star="2">★</button>
           <button type="button" class="star-btn text-gold" data-star="3">★</button>
@@ -91,11 +112,11 @@
       <div class="grid sm:grid-cols-2 gap-4">
         <div>
           <label for="client-name" class="block text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-1.5">Your Name *</label>
-          <input type="text" id="client-name" required placeholder="e.g. Aditi Rao" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-sm focus:border-gold outline-none" />
+          <input type="text" id="client-name" required placeholder="e.g. Aditi Rao" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-base md:text-sm focus:border-gold outline-none" />
         </div>
         <div>
           <label for="client-occasion" class="block text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-1.5">Occasion / Event</label>
-          <select id="client-occasion" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-sm focus:border-gold outline-none">
+          <select id="client-occasion" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-base md:text-sm focus:border-gold outline-none">
             <option value="👰 Wedding / Bridal">👰 Wedding / Bridal</option>
             <option value="💍 Engagement">💍 Engagement</option>
             <option value="✨ Reception">✨ Reception</option>
@@ -108,11 +129,11 @@
       <!-- Feedback Review Text -->
       <div>
         <label for="client-review" class="block text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-1.5">Your Review *</label>
-        <textarea id="client-review" required rows="4" placeholder="How did you feel about the makeup? Did it stay long? Did you get compliments? Share your genuine thoughts..." class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-sm focus:border-gold outline-none leading-relaxed"></textarea>
+        <textarea id="client-review" required rows="4" placeholder="How did you feel about the makeup? Did it stay long? Did you get compliments? Share your genuine thoughts..." class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-base md:text-sm focus:border-gold outline-none leading-relaxed"></textarea>
       </div>
 
       <!-- Submit Button -->
-      <button type="submit" id="btn-submit-review" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold text-base py-3.5 rounded-xl shadow-lg transition duration-200">
+      <button type="submit" id="btn-submit-review" class="w-full bg-gold hover:bg-gold-dark text-black font-semibold text-base py-3.5 rounded-xl shadow-lg transition duration-200 active:scale-95">
         Submit Review 🌟
       </button>
 
